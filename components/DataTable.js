@@ -112,10 +112,11 @@ const DataTable = ({
                 <Table variant='simple'>
                     <Thead {...getTableProps()}>
                         {
-                            headerGroups.map(headerGroup => (
-                                <Tr {...headerGroup.getHeaderGroupProps()}>
-                                    {headerGroup.headers.map(column => (
+                            headerGroups.map((headerGroup, tr_i) => (
+                                <Tr key={'data-head-tr-'+tr_i} {...headerGroup.getHeaderGroupProps()}>
+                                    {headerGroup.headers.map((column, th_i) => (
                                         <Th
+                                            key={'data-head-th-'+th_i}
                                             className={styles.th}
                                             {...column.getHeaderProps()}
                                             isNumeric={numeric.indexOf(column.id) !== -1}
@@ -136,10 +137,10 @@ const DataTable = ({
                     </Thead>
                     <Tbody {...getTableBodyProps()}>
                         {
-                            page.map(row => {
+                            page.map((row, tr_i) => {
                                 prepareRow(row)
                                 return (
-                                    <Tr {...row.getRowProps()}>
+                                    <Tr key={'data-body-tr-'+tr_i} {...row.getRowProps()}>
                                         {
                                             row.cells.map(cell => {
                                                 return custom_tds[cell.column.id] ? custom_tds[cell.column.id](row, cell) : (
