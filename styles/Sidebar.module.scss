@@ -1,0 +1,26 @@
+@import "vars";
+
+.sidebar {
+  padding-top: $top_margin;
+  width: 300px;
+  background: $sidebar;
+
+  &__item {
+    color: $contrast_color;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: 10px 20px;
+    cursor: pointer;
+    
+    &:hover {
+      background: #efefef;
+    }
+
+    &.active {
+      font-weight: 500;
+      background: $gradient;
+      color: white;
+    }
+  }
+}

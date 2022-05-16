@@ -1,0 +1,15 @@
+.list {
+  padding: 10px 0;
+
+  &__items {
+    max-height: 400px;
+    min-height: 100px;
+    overflow-y: scroll;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 20px 0;
+  }
+}

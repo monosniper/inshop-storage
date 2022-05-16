@@ -1,0 +1,11 @@
+@import "vars";
+
+.body {
+  display: flex;
+  min-height: $height_without_header;
+}
+
+.content {
+  padding: $top_margin 40px;
+  width: calc(100% - 300px);
+}

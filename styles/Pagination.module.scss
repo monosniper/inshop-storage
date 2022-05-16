@@ -1,0 +1,57 @@
+@import "vars";
+
+.pagination {
+
+  &__container {
+
+  }
+
+  &__wrapper {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 1rem;
+  }
+
+  &__items {
+    display: flex;
+    gap: .5rem;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    width: 35px;
+    height: 35px;
+    font-size: 18px;
+
+    &_disabled {
+      pointer-events: none;
+    }
+  }
+
+  &__page {
+    cursor: pointer;
+
+    &:hover {
+      background: #eeeeee;
+    }
+
+    &_active {
+      cursor: default;
+      background: $contrast_color !important;
+      color: white;
+    }
+  }
+
+  &__arrow {
+    background: #fff;
+    border: 1px solid #ccc;
+
+    &:not(:disabled) {
+      cursor: pointer;
+    }
+  }
+}
