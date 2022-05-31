@@ -5,6 +5,7 @@ import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import {$routes} from "../http/routes";
 import store from "../store/store";
+import shop from "../store/shop";
 
 const MyApp = ({ Component, pageProps }) => {
   const router = useRouter();
@@ -42,7 +43,11 @@ const MyApp = ({ Component, pageProps }) => {
     } else {
       setAuthorized(true);
 
-      store.requestShops().then(() => store.requestShop())
+      store.requestShops().then(() => {
+        if(store.shops.length && !shop.id) {
+          store.requestShop(store.shops[0].id)
+        }
+      })
     }
   }
 

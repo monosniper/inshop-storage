@@ -27,34 +27,16 @@ class Store {
         makeAutoObservable(this)
     }
 
-    setOptions(options) {
-        this.shop.options = {...this.shop.options, ...options};
-    }
-
     setUser(user) {
         this.user = user
-    }
-
-    setAuthorized(bool) {
-        this.authorized = bool
-    }
-
-    setShopId(id) {
-        this.shop.id = id
     }
 
     setShops(shops) {
         this.shops = shops;
     }
 
-    setShopData(id, options) {
-        const newShops = toJS(this.shops)
-
-        newShops.map(shop => {
-            if(shop.id === id) shop.options = options;
-        })
-
-        this.shops = newShops;
+    setShop(shop) {
+        this.shop = shop
     }
 
     async requestAccessToken(code) {
@@ -74,18 +56,16 @@ class Store {
         return user;
     }
 
-    async requestShop() {
-        const data = await ShopService.requestShop();
+    async requestShop(id) {
+        const data = this.shops.find(shop => shop.id+'' === id+'');
 
-        if(data) {
-            shop.setCategories(data.categories);
-            shop.setOptions(data.options);
-            shop.setId(data.id);
+        shop.setCategories(data.categories);
+        shop.setOptions(data.options);
+        shop.setId(data.id);
 
-            const rs = await ShopService.requestProducts(data.id);
+        const rs = await ShopService.requestProducts(id);
 
-            shop.setProducts(rs.data.data);
-        }
+        shop.setProducts(rs.data.data);
 
         return data;
     }
