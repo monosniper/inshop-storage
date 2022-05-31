@@ -43,7 +43,7 @@ function ToolBox({
                                                         className={card_styles.field + ' ' + card_styles.field_min}>
             <Select placeholder={title} className={card_styles.field__input}
                     onChange={e => handleFilterChange(accessor, e.target.value)}>
-                {options.map((option, i) => <option value={option.value}>{option.text}</option>)}
+                {options.map((option, i) => <option key={'silter-select-option-'+i} value={option.value}>{option.text}</option>)}
             </Select>
         </div>,
         check: ({i, accessor, title}) => <div key={'filter-check-' + i}
