@@ -1,11 +1,11 @@
 import React from 'react';
 
-const Footer = () => {
+const Loader = () => {
     return (
         <div>
-            {/*Footer*/}
+            Loader
         </div>
     );
 };
 
-export default Footer;
+export default Loader;

@@ -53,6 +53,7 @@ const Users = () => {
         {
             Header: 'Возраст',
             accessor: 'age',
+            filter: 'equal'
         },
         {
             Header: 'Почта',
@@ -60,10 +61,21 @@ const Users = () => {
         },
     ], [])
 
+    const custom_filters = [
+        {
+            title: 'Возраст',
+            accessor: 'age',
+            type: 'equal',
+        },
+        {
+            title: 'Поиск',
+            accessor: 'fio',
+            type: 'search',
+            value: ''
+        },
+    ]
+
     const custom_tds = {
-        check: (row, cell) => <Td {...cell.getCellProps()}>
-            <Checkbox size={'lg'} onChange={() => handleCheck(row.original.id)}></Checkbox>
-        </Td>,
         fio: (row, cell) => <Td {...cell.getCellProps()} style={{display: 'flex', gap: '.3rem', alignItems: 'center'}}>
             <img src={`/assets/img/users/${row.original.id}.png`} style={{width: 40}} alt={`${row.original.fio}`}/>
             <span>{row.original.fio}</span>
@@ -90,6 +102,7 @@ const Users = () => {
                 columns={columns}
                 numeric={numeric}
                 custom_tds={custom_tds}
+                custom_filters={custom_filters}
             />
         </>
     );

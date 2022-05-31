@@ -5,77 +5,19 @@ import card_styles from '../styles/Card.module.scss'
 import {BsArrowDown, BsArrowUp, BsSearch} from "react-icons/bs";
 import {useTable, usePagination} from "react-table";
 import styles from '../styles/Products.module.scss'
-import {Checkbox, Table, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr} from "@chakra-ui/react";
+import {Button, Checkbox, Table, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr} from "@chakra-ui/react";
 import Pagination from "../components/Pagination";
 import ControlledPagination from "../components/ControlledPagination";
 import DataTable from "../components/DataTable";
+import {FaEdit} from "react-icons/fa";
+import AddProduct from "../components/AddProduct";
+import EditProduct from "../components/EditProduct";
+import store from "../store/store";
+import {observer} from "mobx-react-lite";
+import shop from "../store/shop";
 
 const Products = () => {
-    const data = useMemo(() => [
-        {
-            id: 1,
-            title: 'Super puper sneackers u know',
-            category: 'Кроссовки',
-            inStock: 42,
-            price: 180,
-        },
-        {
-            id: 1,
-            title: 'Super puper sneackers u know',
-            category: 'Кроссовки',
-            inStock: 42,
-            price: 180,
-        },
-        {
-            id: 1,
-            title: 'Super puper sneackers u know',
-            category: 'Кроссовки',
-            inStock: 42,
-            price: 180,
-        },
-        {
-            id: 1,
-            title: 'Super puper sneackers u know',
-            category: 'Кроссовки',
-            inStock: 42,
-            price: 180,
-        },
-        {
-            id: 1,
-            title: 'Super puper sneackers u know',
-            category: 'Кроссовки',
-            inStock: 42,
-            price: 180,
-        },
-        {
-            id: 1,
-            title: 'Super puper sneackers u know',
-            category: 'Кроссовки',
-            inStock: 42,
-            price: 180,
-        },
-        {
-            id: 1,
-            title: 'Super puper sneackers u know',
-            category: 'Кроссовки',
-            inStock: 42,
-            price: 180,
-        },
-        {
-            id: 1,
-            title: 'Super puper sneackers u know',
-            category: 'Кроссовки',
-            inStock: 42,
-            price: 180,
-        },
-        {
-            id: 1,
-            title: 'Super puper sneackers u know',
-            category: 'Кроссовки',
-            inStock: 42,
-            price: 180,
-        },
-    ], [])
+    const data = useMemo(() => shop.products, [shop.products])
 
     const columns = useMemo(() => [
         {
@@ -101,25 +43,65 @@ const Products = () => {
         {
             Header: 'В наличии',
             accessor: 'inStock',
+            filter: 'inStock',
         },
         {
             Header: 'Цена',
             accessor: 'price',
+            filter: 'between'
+        },
+        {
+            Header: '',
+            accessor: 'actions',
         }
     ], [])
 
+    const custom_filters = [
+        {
+            title: 'Цена',
+            accessor: 'price',
+            type: 'between',
+            value: []
+        },
+        {
+            title: 'В наличии',
+            accessor: 'inStock',
+            type: 'check',
+        },
+        {
+            title: 'Категория',
+            accessor: 'category',
+            type: 'select',
+            options: shop.categories.map(cat => {
+                return {value: cat.id, text: cat.title}
+            })
+        },
+        {
+            title: 'Поиск',
+            accessor: 'title',
+            type: 'search',
+            value: ''
+        },
+    ]
+
     const custom_tds = {
-        check: (row, cell) => <Td {...cell.getCellProps()}>
-            <Checkbox size={'lg'} onChange={() => handleCheck(row.original.id)}></Checkbox>
-        </Td>,
         img: (row, cell) => <Td {...cell.getCellProps()}>
-            <img src={`/assets/img/products/${row.original.id}.png`} alt={`${row.original.title}`}/>
+            {/*<img src={`/assets/img/products/${row.original.id}.png`} alt={`${row.original.title}`}/>*/}
+            <img src={`/assets/img/products/1.png`} alt={`${row.original.title}`}/>
         </Td>,
         inStock: (row, cell) => <Td {...cell.getCellProps()} isNumeric>
             {cell.render('Cell')} шт.
         </Td>,
         price: (row, cell) => <Td {...cell.getCellProps()} isNumeric>
             ${cell.render('Cell')}
+        </Td>,
+        actions: (row, cell) => <Td {...cell.getCellProps()} isNumeric>
+            <EditProduct
+                title={row.original.title}
+                price={row.original.price}
+                inStock={row.original.inStock}
+                category={row.original.category}
+            />
         </Td>,
     }
 
@@ -144,9 +126,12 @@ const Products = () => {
                 columns={columns}
                 numeric_ths={numeric_ths}
                 custom_tds={custom_tds}
+                custom_filters={custom_filters}
             />
+
+            <AddProduct />
         </>
     );
 };
 
-export default Products;
+export default observer(Products);

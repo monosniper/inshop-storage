@@ -1,24 +1,108 @@
 import React, {useState} from 'react';
-import {Table, TableContainer, Tbody, Td, Th, Thead, Tr} from "@chakra-ui/react";
+import {Button, Checkbox, Select, Table, TableContainer, Tbody, Td, Th, Thead, Tr} from "@chakra-ui/react";
 import styles from "../styles/Products.module.scss";
 import {BsArrowDown, BsArrowUp, BsSearch} from "react-icons/bs";
 import Card from "./Card";
-import {usePagination, useTable} from "react-table";
+import {usePagination, useTable, useFilters, useGlobalFilter, useSortBy} from "react-table";
 import card_styles from "../styles/Card.module.scss";
 import ControlledPagination from "./ControlledPagination";
 
-function ToolBox() {
-    const [query, setQuery] = useState('')
+function ToolBox({
+                     custom_filters,
+                     filters,
+                     setFilters,
+                     setActiveRows,
+                     data,
+                     activeRows,
+                     preGlobalFilteredRows,
+                     globalFilter,
+                     setGlobalFilter,
+                     setFilter,
+                     rows,
+                 }) {
+    const handleFilterChange = (accessor, value, isGlobal=false) => {
+        const newFilters = [...filters]
 
-    const handleSearch = (e) => {
-        setQuery(e.target.value)
+        newFilters.map(filter => {
+            if (filter.accessor === accessor) {
+                filter.value = value;
+            }
+
+            return filter
+        })
+
+        setFilter(accessor, value)
+
+        isGlobal && setGlobalFilter(value || undefined)
+    }
+
+    const getValue = (accessor) => filters.find(filter => filter.accessor === accessor).value
+
+    const generateFilter = {
+        select: ({i, accessor, options, title}) => <div key={'filter-select-' + i}
+                                                        className={card_styles.field + ' ' + card_styles.field_min}>
+            <Select placeholder={title} className={card_styles.field__input}
+                    onChange={e => handleFilterChange(accessor, e.target.value)}>
+                {options.map((option, i) => <option value={option.value}>{option.text}</option>)}
+            </Select>
+        </div>,
+        check: ({i, accessor, title}) => <div key={'filter-check-' + i}
+                                              className={card_styles.field + ' ' + card_styles.field_out + ' ' + card_styles.field_check}>
+            <Checkbox isChecked={getValue(accessor)} size={'lg'}
+                      onChange={e => handleFilterChange(accessor, e.target.checked)}></Checkbox>
+            <span onClick={e => handleFilterChange(accessor, !getValue(accessor))}
+                  className={card_styles.field__title}>{title}</span>
+        </div>,
+        search: ({i, accessor}) => <div key={'filter-search-' + i} className={card_styles.field}>
+            <span className={card_styles.field__icon}><BsSearch/></span>
+            <input type="text" className={card_styles.field__input}
+                   onChange={e => handleFilterChange(accessor, e.target.value, true)} placeholder={'Поиск'}
+                   value={getValue(accessor)}/>
+        </div>,
+        equal: ({i, accessor, title}) => <div key={'filter-equal-' + i} className={card_styles.field + ' ' + card_styles.field_out + ' ' + card_styles.field_check}>
+            <span className={card_styles.field__title}>{title}</span>
+            <div key={'filter-equal-' + i} className={card_styles.field + ' ' + card_styles.field_xs}>
+
+                <input type="number" className={card_styles.field__input}
+                       onChange={e => handleFilterChange(accessor, e.target.value, true)} placeholder={'18'}
+                       value={getValue(accessor)}/>
+            </div>
+        </div>,
+        between: ({i, accessor, title}) => <div key={'filter-between-' + i} className={card_styles.field_between}>
+            <div className={card_styles.field + ' ' + card_styles.field_xs}>
+                <input type="number" className={card_styles.field__input}
+                       onChange={e => handleFilterChange(accessor, (old = []) => [e.target.value ? parseInt(e.target.value, 10) : undefined, old[1]])} placeholder={'От'}
+                       value={getValue(accessor)[0]}/>
+            </div>
+            <span> - </span>
+            <div className={card_styles.field + ' ' + card_styles.field_xs}>
+                <input type="number" className={card_styles.field__input}
+                       onChange={e => handleFilterChange(accessor, (old = []) => [old[0], e.target.value ? parseInt(e.target.value, 10) : undefined])} placeholder={'До'}
+                       value={getValue(accessor)[1]}/>
+            </div>
+        </div>
+    }
+
+    const handleSelectAll = () => {
+        setActiveRows(rows.map(row => row.values['id']))
+    }
+
+    const handleUnselectAll = () => {
+        setActiveRows([])
+    }
+
+    const handleDeleteAll = () => {
+        console.log('handleDeleteAll', activeRows)
     }
 
     return <div className={card_styles.card__toolbox}>
-        <div className={card_styles.field}>
-            <span className={card_styles.field__icon}><BsSearch/></span>
-            <input type="text" className={card_styles.field__input} onChange={handleSearch} placeholder={'Поиск'}
-                   value={query}/>
+        <div className={card_styles.card__toolbox__top}>
+            {custom_filters.map((filter, i) => generateFilter[filter.type]({...filter, i}))}
+        </div>
+        <div className={card_styles.card__toolbox__footer}>
+            <Button colorScheme='blue' onClick={handleSelectAll}>Выбрать все</Button>
+            <Button colorScheme='blue' onClick={handleUnselectAll}>Снять выделение</Button>
+            <Button colorScheme='red' onClick={handleDeleteAll}>Удалить выбранное</Button>
         </div>
     </div>;
 }
@@ -63,12 +147,50 @@ function TableFooter(props) {
 }
 
 const DataTable = ({
-                       title, data, columns, numeric=[], custom_tds=[]
+                       title,
+                       data,
+                       columns,
+                       numeric_ths = [],
+                       custom_tds = [],
+                       check = true,
+                       custom_filters = []
                    }) => {
 
+    const [filters, setFilters] = useState(custom_filters)
+    const [activeRows, setActiveRows] = useState([])
+
+    const handleCheck = (id) => {
+        setActiveRows(activeRows.includes(id) ? activeRows.filter(i => i !== id) : [...activeRows, id])
+    }
+
+    if (check) custom_tds.check = (row, cell) => <Td {...cell.getCellProps()}>
+        <Checkbox isChecked={activeRows.includes(row.original.id)} size={'lg'}
+                  onChange={() => handleCheck(row.original.id)}></Checkbox>
+    </Td>
+
+    function inStockFilterFn(rows, id, filterValue) {
+        return rows.filter(row => filterValue ? row.values['inStock'] > 0 : row.values['inStock'] >= 0);
+    }
+
+    const filterTypes = React.useMemo(
+        () => ({
+            inStock: inStockFilterFn,
+        }),
+        []
+    )
+
     const tableInstance = useTable(
-        {columns, data, initialState: {pageIndex: 0, pageSize: 2}}
-        , usePagination
+        {
+            columns,
+            data,
+            initialState: {pageIndex: 0, pageSize: 10},
+            // defaultColumn,
+            filterTypes,
+        },
+        useFilters,
+        useGlobalFilter,
+        useSortBy,
+        usePagination,
     )
 
     const {
@@ -88,17 +210,33 @@ const DataTable = ({
         nextPage,
         previousPage,
         setPageSize,
-        state: {pageIndex, pageSize},
+        setGlobalFilter,
+        preGlobalFilteredRows,
+        setFilter,
+        rows,
+        state: {
+            pageIndex,
+            pageSize,
+            globalFilter,
+        },
     } = tableInstance
-
-    const handleCheck = (id) => {
-        console.log(id)
-    }
 
     return (
         <Card
             title={title}
-            toolBox={<ToolBox/>}
+            toolBox={<ToolBox
+                filters={filters}
+                custom_filters={custom_filters}
+                setFilters={setFilters}
+                setActiveRows={setActiveRows}
+                data={data}
+                activeRows={activeRows}
+                preGlobalFilteredRows={preGlobalFilteredRows}
+                globalFilter={globalFilter}
+                setGlobalFilter={setGlobalFilter}
+                setFilter={setFilter}
+                rows={rows}
+            />}
             footer={<TableFooter
                 pageIndex={pageIndex}
                 totalCount={data.length}
@@ -106,6 +244,7 @@ const DataTable = ({
                 gotoPage={gotoPage}
                 nextPage={nextPage}
                 previousPage={previousPage}
+                setPageSize={setPageSize}
             />}
         >
             <TableContainer>
@@ -113,13 +252,13 @@ const DataTable = ({
                     <Thead {...getTableProps()}>
                         {
                             headerGroups.map((headerGroup, tr_i) => (
-                                <Tr key={'data-head-tr-'+tr_i} {...headerGroup.getHeaderGroupProps()}>
+                                <Tr key={'data-head-tr-' + tr_i} {...headerGroup.getHeaderGroupProps()}>
                                     {headerGroup.headers.map((column, th_i) => (
                                         <Th
-                                            key={'data-head-th-'+th_i}
+                                            key={'data-head-th-' + th_i}
                                             className={styles.th}
-                                            {...column.getHeaderProps()}
-                                            isNumeric={numeric.indexOf(column.id) !== -1}
+                                            {...column.getHeaderProps(column.getSortByToggleProps())}
+                                            isNumeric={numeric_ths.indexOf(column.id) !== -1}
                                         >
                                             {column.render('Header')}
                                             <span>
@@ -140,11 +279,11 @@ const DataTable = ({
                             page.map((row, tr_i) => {
                                 prepareRow(row)
                                 return (
-                                    <Tr key={'data-body-tr-'+tr_i} {...row.getRowProps()}>
+                                    <Tr key={'data-body-tr-' + tr_i} {...row.getRowProps()}>
                                         {
                                             row.cells.map(cell => {
                                                 return custom_tds[cell.column.id] ? custom_tds[cell.column.id](row, cell) : (
-                                                    <Td isNumeric={numeric.indexOf(cell.column.id) !== -1} {...cell.getCellProps()}>{cell.render('Cell')}</Td>
+                                                    <Td isNumeric={numeric_ths.indexOf(cell.column.id) !== -1} {...cell.getCellProps()}>{cell.render('Cell')}</Td>
                                                 )
                                             })}
 

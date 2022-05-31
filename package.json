@@ -11,18 +11,29 @@
   "dependencies": {
     "@chakra-ui/react": "^1.8.8",
     "@emotion/react": "^11.9.0",
-    "@svgr/webpack": "^6.2.1",
     "@emotion/styled": "^11.8.1",
+    "@svgr/webpack": "^6.2.1",
+    "axios": "^0.27.2",
+    "filepond-plugin-image-exif-orientation": "^1.0.11",
+    "filepond-plugin-image-preview": "^4.6.11",
     "framer-motion": "^6.3.3",
+    "mobx": "^6.6.0",
+    "mobx-react-lite": "^3.4.0",
     "next": "^12.1.6",
     "node-sass": "^7.0.1",
+    "noty": "^3.2.0-beta-deprecated",
+    "randomstring": "^1.2.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-filepond": "^7.1.2",
     "react-icons": "^4.3.1",
+    "react-mobx": "^0.0.4",
+    "react-simple-oauth2-login": "^0.5.3",
     "react-table": "^7.7.0"
   },
   "devDependencies": {
     "eslint": "8.15.0",
-    "eslint-config-next": "12.1.6"
+    "eslint-config-next": "12.1.6",
+    "mocker-data-generator": "^2.12.0"
   }
 }

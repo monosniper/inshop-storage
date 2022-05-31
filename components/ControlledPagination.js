@@ -5,7 +5,7 @@ import styles from '../styles/Pagination.module.scss'
 import {DOTS, usePagination} from "../hooks/usePagination";
 
 const ControlledPagination = (props) => {
-    console.log(props)
+
     const paginationRange = usePagination({
         currentPage: props.pageIndex,
         totalCount: props.totalCount,
