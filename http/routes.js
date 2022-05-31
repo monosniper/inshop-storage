@@ -1,6 +1,7 @@
 export const $routes = {
     index: '/',
     login: '/login',
+    categories: '/categories',
     products: '/products',
     users: '/users',
     shop: (id) => `/constructor/${id}`,
@@ -20,6 +21,11 @@ export const $apiRoutes = {
             list: (id) => `/shops/${id}/products`,
             create: (id) => `/shops/${id}/products`,
             update: (shop_id, product_id) => `/shops/${shop_id}/products/${product_id}`,
+        },
+        categories: {
+            list: (id) => `/shops/${id}/categories`,
+            create: (id) => `/shops/${id}/categories`,
+            update: (shop_id, category_id) => `/shops/${shop_id}/categories/${category_id}`,
         },
         create: 'shops',
         update: (id) => `shops/${id}`,

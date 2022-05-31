@@ -38,6 +38,12 @@ export default class ShopService {
         return response;
     }
 
+    static async createCategory(shop_id, data) {
+        const response = await $api.post($apiRoutes.shops.categories.create(shop_id), data);
+
+        return response;
+    }
+
     static async updateProduct(shop_id, product_id, data) {
         const response = await $api.put($apiRoutes.shops.products.update(shop_id, product_id), data);
 

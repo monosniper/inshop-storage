@@ -41,6 +41,14 @@ class Shop {
         return rs;
     }
 
+    async createCategory(data) {
+        const rs = await ShopService.createCategory(this.id, {shop_id: this.id, ...data})
+
+        this.setCategories([...this.categories, rs.data.data])
+
+        return rs;
+    }
+
     async updateProduct(id, data) {
         const rs = await ShopService.updateProduct(this.id, id, data)
 

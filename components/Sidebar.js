@@ -8,6 +8,7 @@ import {AiOutlineAppstore} from "react-icons/ai";
 import Link from "next/link";
 import {$routes} from "../http/routes";
 import {useRouter} from "next/router";
+import {BiCategoryAlt} from "react-icons/bi";
 
 function SidebarItem({ children, icon, href, externalLink=false }) {
     const [itemClass, setItemClass] = useState(styles.sidebar__item);
@@ -35,6 +36,7 @@ const Sidebar = () => {
             <SidebarItem icon={<Icon as={GoHome} w={6} h={6} />} href={$routes.index}>Личный кабинет</SidebarItem>
             <SidebarItem icon={<Icon as={AiOutlineAppstore} w={6} h={6} />} href={$routes.products}>Склад</SidebarItem>
             <SidebarItem icon={<Icon as={FiUsers} w={6} h={6} />} href={$routes.users}>Клиенты</SidebarItem>
+            <SidebarItem icon={<Icon as={BiCategoryAlt} w={6} h={6} />} href={$routes.categories}>Категории</SidebarItem>
             <SidebarItem icon={<Icon as={IoConstructOutline} w={6} h={6} />} href={process.env.NEXT_PUBLIC_CONSTRUCTOR_LINK} externalLink>Конструктор</SidebarItem>
         </div>
     );
