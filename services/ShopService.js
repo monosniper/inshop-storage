@@ -29,8 +29,15 @@ export default class ShopService {
     static async requestProducts(id) {
         const response = await $api.get($apiRoutes.shops.products.list(id));
 
-        return response;
+        return response.data.data;
     }
+
+    static async requestClients(id) {
+        const response = await $api.get($apiRoutes.shops.clients.list(id));
+
+        return response.data.data;
+    }
+
 
     static async createProduct(shop_id, data) {
         const response = await $api.post($apiRoutes.shops.products.create(shop_id), data);

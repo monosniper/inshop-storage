@@ -20,6 +20,7 @@ class Store {
         },
         categories: [],
         products: [],
+        clients: [],
     }
     shops = []
 
@@ -63,9 +64,11 @@ class Store {
         shop.setOptions(data.options);
         shop.setId(data.id);
 
-        const rs = await ShopService.requestProducts(id);
+        const {products} = await ShopService.requestProducts(id);
+        const {clients} = await ShopService.requestClients(id);
 
-        shop.setProducts(rs.data.data);
+        shop.setProducts(products);
+        shop.setClients(clients);
 
         return data;
     }

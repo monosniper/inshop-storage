@@ -17,6 +17,11 @@ export const $apiRoutes = {
     },
     shops: {
         list: 'user/shops',
+        clients: {
+            list: (id) => `/shops/${id}/clients`,
+            create: (id) => `/shops/${id}/clients`,
+            update: (shop_id, client_id) => `/shops/${shop_id}/clients/${client_id}`,
+        },
         products: {
             list: (id) => `/shops/${id}/products`,
             create: (id) => `/shops/${id}/products`,
@@ -31,6 +36,10 @@ export const $apiRoutes = {
         update: (id) => `shops/${id}`,
         get: (id) => `/shops/${id}`
     }
+}
+
+export const $externalRoutes = {
+    constructor: (shop_id) => process.env.NEXT_PUBLIC_CONSTRUCTOR_LINK + '/constructor/' + shop_id
 }
 
 export const $serverRoutes = Object.fromEntries(Object.entries({

@@ -1,18 +1,7 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useMemo} from 'react';
 import Head from "next/head";
-import Card from "../components/Card";
-import card_styles from '../styles/Card.module.scss'
-import {BsArrowDown, BsArrowUp, BsSearch} from "react-icons/bs";
-import {useTable, usePagination} from "react-table";
-import styles from '../styles/Products.module.scss'
-import {Button, Checkbox, Table, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr} from "@chakra-ui/react";
-import Pagination from "../components/Pagination";
-import ControlledPagination from "../components/ControlledPagination";
+import {Td} from "@chakra-ui/react";
 import DataTable from "../components/DataTable";
-import {FaEdit} from "react-icons/fa";
-import AddProduct from "../components/AddProduct";
-import EditProduct from "../components/EditProduct";
-import store from "../store/store";
 import {observer} from "mobx-react-lite";
 import shop from "../store/shop";
 import AddCategory from "../components/AddCategory";

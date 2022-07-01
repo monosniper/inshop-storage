@@ -4,10 +4,11 @@ import {defaultOptions} from "../utils/options";
 
 class Shop {
     id = null
-    options = defaultOptions
-    domain = ''
+    q = ''
     products = []
-    categories = []
+    clients = []
+    categories = null
+    options = {}
 
     constructor() {
         makeAutoObservable(this)
@@ -17,20 +18,51 @@ class Shop {
         this.id = id
     }
 
-    setDomain(domain) {
-        this.domain = domain;
-    }
-
     setOptions(options) {
         this.options = options;
     }
 
     setProducts(products) {
-        this.products = products;
+        this.products = products
+    }
+
+    setClients(clients) {
+        this.clients = clients
     }
 
     setCategories(categories) {
-        this.categories = categories;
+        this.categories = categories
+    }
+
+    async requestData() {
+        const data = await ShopService.requestShop();
+
+        if(data) {
+            console.log(data.categories)
+            this.setCategories(data.categories);
+            this.setOptions(data.options);
+            this.setId(data.id);
+        }
+
+        return data;
+    }
+
+    async requestProducts() {
+        const rs = await ShopService.getProducts(this.id);
+
+        this.setProducts(rs)
+
+        return rs;
+    }
+
+    async makeOrder(shipping_data, products) {
+        const response = await ShopService.makeOrder(shipping_data, products)
+
+        return response.status
+    }
+
+    getProduct(id) {
+        return this.products.find(product => product.id+'' === id+'')
     }
 
     async createProduct(data) {

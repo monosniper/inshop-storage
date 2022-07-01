@@ -18,7 +18,9 @@ const Header = () => {
     }
 
     const handleShopChange = (e) => {
-        store.requestShop(e.target.value)
+        store.requestShop(e.target.value).then(() => {
+            router.push($routes.index)
+        })
     }
 
     return (
