@@ -64,8 +64,8 @@ class Store {
         shop.setOptions(data.options);
         shop.setId(data.id);
 
-        const {products} = await ShopService.requestProducts(id);
-        const {clients} = await ShopService.requestClients(id);
+        const products = await ShopService.requestProducts(id);
+        const clients = await ShopService.requestClients(id);
 
         shop.setProducts(products);
         shop.setClients(clients);

@@ -48,8 +48,8 @@ class Shop {
     }
 
     async requestProducts() {
-        const rs = await ShopService.getProducts(this.id);
-
+        const rs = await ShopService.requestProducts(this.id);
+        console.log(rs)
         this.setProducts(rs)
 
         return rs;

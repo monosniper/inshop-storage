@@ -6,6 +6,7 @@ import {useRouter} from "next/router";
 import {$routes} from "../http/routes";
 import store from "../store/store";
 import shop from "../store/shop";
+import {observer} from "mobx-react-lite";
 
 const MyApp = ({ Component, pageProps }) => {
   const router = useRouter();
