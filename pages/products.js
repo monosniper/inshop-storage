@@ -18,7 +18,6 @@ import shop from "../store/shop";
 
 const Products = () => {
     const data = useMemo(() => shop.products, [shop.products])
-    console.log(data, shop.products)
 
     const columns = useMemo(() => [
         {
@@ -110,6 +109,10 @@ const Products = () => {
         'inStock',
         'price',
     ]
+
+    useEffect(() => {
+        shop.requestProducts()
+    }, [])
 
     return (
         <>
