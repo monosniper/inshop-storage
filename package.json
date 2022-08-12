@@ -20,6 +20,7 @@
     "framer-motion": "^6.3.3",
     "mobx": "^6.6.0",
     "mobx-react-lite": "^3.4.0",
+    "moment-timezone": "^0.5.34",
     "next": "^12.1.6",
     "node-sass": "^7.0.1",
     "noty": "^3.2.0-beta-deprecated",
@@ -29,8 +30,10 @@
     "react-filepond": "^7.1.2",
     "react-icons": "^4.3.1",
     "react-mobx": "^0.0.4",
+    "react-moment": "^1.1.2",
     "react-simple-oauth2-login": "^0.5.3",
-    "react-table": "^7.7.0"
+    "react-table": "^7.7.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "eslint": "8.15.0",

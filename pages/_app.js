@@ -1,62 +1,57 @@
 import { ChakraProvider } from '@chakra-ui/react'
 import '../styles/globals.scss'
-import Layout from "../components/Layout";
+import Layout from "../components/layout/Layout";
 import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import {$routes} from "../http/routes";
 import store from "../store/store";
 import shop from "../store/shop";
 import {observer} from "mobx-react-lite";
+import NoShop from "./no_shop";
+import Loading from "../components/layout/Loading";
 
 const MyApp = ({ Component, pageProps }) => {
   const router = useRouter();
-  const [authorized, setAuthorized] = useState(store.authorized);
+  const [isNoShop, setIsNoShop] = useState(false);
+  const [isLoading, setLoading] = useState(true);
+  const publicPaths = [
+      $routes.index,
+      $routes.no_shop,
+      $routes.shops.create
+  ]
 
   useEffect(() => {
-    // run auth check on initial load
-    authCheck(router.asPath);
+      store.checkAuth().then(rs => {
+          store.requestShops()
+          console.log('test')
+          setLoading(false)
 
-    // set authorized to false to hide page content while changing routes
-    const hideContent = () => setAuthorized(false);
-    router.events.on('routeChangeStart', hideContent);
+          if(!rs.ok) {
+              router.push({
+                  pathname: $routes.login,
+                  query: { returnUrl: router.asPath }
+              });
+          }
 
-    // run auth check on route change
-    router.events.on('routeChangeComplete', authCheck)
-
-    // unsubscribe from events in useEffect return function
-    return () => {
-      router.events.off('routeChangeStart', hideContent);
-      router.events.off('routeChangeComplete', authCheck);
-    }
-  }, []);
-
-  function authCheck(url) {
-    // redirect to login page if accessing a private page and not logged in
-    const publicPaths = [$routes.login];
-    const path = url.split('?')[0];
-
-    if (!store.user && !publicPaths.includes(path)) {
-      setAuthorized(false);
-      router.push({
-        pathname: $routes.login,
-        query: { returnUrl: router.asPath }
-      });
-    } else {
-      setAuthorized(true);
-
-      store.requestShops().then(() => {
-        if(store.shops.length && !shop.id) {
-          store.requestShop(store.shops[0].id)
-        }
+          if(!publicPaths.includes(router.asPath.split('?')[0]) && !shop.id) {
+              setIsNoShop(true)
+          }
       })
-    }
-  }
+  }, [])
+
+    useEffect(() => {
+        if(store.authorized && !publicPaths.includes(router.asPath.split('?')[0]) && !shop.id) {
+            setIsNoShop(true)
+        } else {
+            setIsNoShop(false)
+        }
+    }, [router.asPath])
 
   return <ChakraProvider>
     <Layout {...pageProps}>
-      {authorized && <Component {...pageProps} />}
+        {isLoading ? <Loading /> : isNoShop ? <NoShop /> : <Component {...pageProps} />}
     </Layout>
   </ChakraProvider>
 }
 
-export default MyApp
+export default observer(MyApp)

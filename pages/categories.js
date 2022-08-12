@@ -1,10 +1,13 @@
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import Head from "next/head";
 import {Td} from "@chakra-ui/react";
 import DataTable from "../components/DataTable";
 import {observer} from "mobx-react-lite";
 import shop from "../store/shop";
 import AddCategory from "../components/AddCategory";
+import EditProduct from "../components/EditProduct";
+import DeleteBtn from "../components/table/DeleteBtn";
+import EditCategory from "../components/table/EditCategory";
 
 const Categories = () => {
     const data = useMemo(() => shop.categories, [shop.categories])
@@ -29,10 +32,6 @@ const Categories = () => {
         {
             Header: 'Кол-во товаров',
             accessor: 'products_count',
-        },
-        {
-            Header: '',
-            accessor: 'actions',
         }
     ], [])
 
@@ -51,18 +50,21 @@ const Categories = () => {
         },
     ]
 
+    const actions = [
+        (row) => <EditCategory
+            row={row.original}
+            title={row.original.title}
+        />,
+        (row) => <DeleteBtn
+            id={row.values.id}
+            deleteItem={(id) => shop.deleteCategory(id)}
+            requestItems={() => shop.requestCategories()}
+        />
+    ]
+
     const custom_tds = {
         icon: (row, cell) => <Td {...cell.getCellProps()}>
-            {/*<img src={`/assets/img/products/${row.original.id}.png`} alt={`${row.original.title}`}/>*/}
-            <img src={`/assets/img/products/1.png`} alt={`${row.original.title}`}/>
-        </Td>,
-        actions: (row, cell) => <Td {...cell.getCellProps()} isNumeric>
-            {/*<EditProduct*/}
-            {/*    title={row.original.title}*/}
-            {/*    price={row.original.price}*/}
-            {/*    inStock={row.original.inStock}*/}
-            {/*    category={row.original.category}*/}
-            {/*/>*/}
+            <img style={{maxWidth: 70}} src={row.original.icon_url} alt={`${row.original.title}`}/>
         </Td>,
     }
 
@@ -70,10 +72,14 @@ const Categories = () => {
         'products_count',
     ]
 
+    useEffect(() => {
+        shop.requestCategories()
+    }, [])
+
     return (
         <>
             <Head>
-                <title>Склад - {process.env.NEXT_PUBLIC_APP_NAME}</title>
+                <title>Категории - {process.env.NEXT_PUBLIC_APP_NAME}</title>
                 <meta name="description" content='{ props.description }'/>
                 {/*<link rel="icon" href="/favicon.ico" />*/}
             </Head>
@@ -87,6 +93,9 @@ const Categories = () => {
                 numeric_ths={numeric_ths}
                 custom_tds={custom_tds}
                 custom_filters={custom_filters}
+                actions={actions}
+                deleteMany={(ids) => shop.deleteCategories(ids)}
+                requestItems={() => shop.requestCategories()}
             />
 
             <AddCategory />

@@ -1,13 +1,10 @@
 import React, {useState} from 'react';
-import Noty from "noty";
-import shop from "../store/shop";
 import {FilePond, registerPlugin} from "react-filepond";
 import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
-import styles from "../styles/AddProduct.module.scss";
-import {HiPlus} from "react-icons/hi";
 import {
-    Box, Button,
+    Box,
+    Button,
     Input,
     Modal,
     ModalBody,
@@ -15,20 +12,27 @@ import {
     ModalContent, ModalFooter,
     ModalHeader,
     ModalOverlay,
+    NumberDecrementStepper,
+    NumberIncrementStepper,
+    NumberInput,
+    NumberInputField,
+    NumberInputStepper, Select,
+    SimpleGrid,
     Stack,
-    Text,
+    Text
 } from "@chakra-ui/react";
-import {v4 as uuidv4} from "uuid";
-import {API_URL} from "../http";
+import {FaEdit} from "react-icons/fa";
+import {API_URL} from "../../http";
 
-const AddCategory = () => {
+const EditCategory = (props) => {
     const [isOpen, setIsOpen] = useState(false)
-    const [title, setTitle] = useState('')
+    const [title, setTitle] = useState(props.title)
+    const {id, uuid, icon_url} = props.row
     const [files, setFiles] = useState([])
-    const [uuid, setUuid] = useState(uuidv4());
     const server = {
         url: API_URL,
         process: 'files/upload/' + uuid + '/images',
+        fetch: 'files/get/' + uuid + '/images',
         revert: {
             url: 'files/delete/',
             method: 'POST'
@@ -40,57 +44,32 @@ const AddCategory = () => {
 
     const handleTitleChange = e => setTitle(e.target.value)
 
-    const validationError = (type) => {
-        const errors = {
-            'title': 'Название обязательно к заполнению.',
-        }
-
-        new Noty({
-            type: 'error',
-            text: errors[type],
-        }).show()
-    }
-
-    const resetFields = () => {
-        setTitle('')
-        setUuid(uuidv4())
-        setFiles([])
-    }
-
     const handleSubmit = () => {
-        if(title === '') {
-            validationError('title')
-        } else {
-            shop.createCategory({
-                title,
-                uuid,
-            }).then(() => {
-                new Noty({
-                    type: 'success',
-                    text: 'Категория добавлена успещно.'
-                }).show()
-
-                setIsOpen(false)
-                resetFields()
-            })
-        }
+        console.log('submit ', icon_url)
     }
 
     registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
 
     return (
         <>
-            <div onClick={handleOpen} className={styles.button}>
-                <HiPlus/>
-            </div>
+            <Button mx={1} onClick={handleOpen} colorScheme={'green'}><FaEdit /></Button>
 
             <Modal onClose={handleClose} closeOnOverlayClick={false} isOpen={isOpen} isCentered>
-                <ModalOverlay/>
+                <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>Добавить категорию</ModalHeader>
-                    <ModalCloseButton/>
+                    <ModalHeader>Редактировать</ModalHeader>
+                    <ModalCloseButton />
                     <ModalBody>
                         <Stack spacing={2}>
+                            <Box>
+                                <Text mb='8px'>Название</Text>
+                                <Input
+                                    value={title}
+                                    onChange={handleTitleChange}
+                                    placeholder=''
+                                    size='sm'
+                                />
+                            </Box>
                             <Box>
                                 <FilePond
                                     files={files}
@@ -99,15 +78,6 @@ const AddCategory = () => {
                                     name="logo"
                                     labelIdle='Выберите картинку'
                                     credits={false}
-                                />
-                            </Box>
-                            <Box>
-                                <Text mb='8px'>Название</Text>
-                                <Input
-                                    value={title}
-                                    onChange={handleTitleChange}
-                                    placeholder=''
-                                    size='sm'
                                 />
                             </Box>
                         </Stack>
@@ -122,4 +92,4 @@ const AddCategory = () => {
     );
 };
 
-export default AddCategory;
+export default EditCategory;

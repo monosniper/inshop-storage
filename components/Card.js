@@ -2,9 +2,9 @@ import React from 'react';
 import styles from '../styles/Card.module.scss'
 import Link from "next/link";
 
-const Card = ({ children, title, linkText, linkHref, toolBox, footer }) => {
+const Card = ({ children, title, linkText, linkHref, toolBox, footer, style={} }) => {
     return (
-        <div className={styles.card}>
+        <div style={style} className={styles.card}>
             {title ?
                 <div className={styles.card__header}>
                     <span>{title}</span>

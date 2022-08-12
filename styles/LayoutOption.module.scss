@@ -1,0 +1,32 @@
+.option {
+  background: #f1f1f1;
+  border-radius: 10px;
+
+  &:not(.child) {
+    padding: 15px 30px;
+  }
+
+  &.child .option__title {
+    font-size: 16px;
+  }
+
+  &+.option {
+    margin-top: .5rem;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+
+  &__title {
+    font-size: 18px;
+
+  }
+
+  &__children {
+    padding-top: .5rem;
+    padding-left: 1rem;
+  }
+}

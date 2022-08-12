@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import styles from '../styles/AddProduct.module.scss'
 import {HiPlus} from "react-icons/hi";
 import {
@@ -28,9 +28,20 @@ import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 import "filepond/dist/filepond.min.css";
 import shop from "../store/shop";
 import Noty from "noty";
+import { v4 as uuidv4 } from 'uuid';
+import {API_URL} from "../http";
 
 const AddProduct = () => {
     const [isOpen, setIsOpen] = useState(false)
+    const [uuid, setUuid] = useState(uuidv4());
+    const server = {
+        url: API_URL,
+        process: 'files/upload/' + uuid + '/images',
+        revert: {
+            url: 'files/delete/',
+            method: 'POST'
+        },
+    };
     const [title, setTitle] = useState('')
     const [subtitle, setSubtitle] = useState('')
     const [price, setPrice] = useState('')
@@ -39,6 +50,7 @@ const AddProduct = () => {
     const [description, setDescription] = useState('')
     const [properties, setProperties] = useState([])
     const [files, setFiles] = useState([])
+    const categories  = useMemo(() => shop.categories, [shop.categories])
 
     const handleOpen = () => setIsOpen(true)
     const handleClose = () => setIsOpen(false)
@@ -70,6 +82,8 @@ const AddProduct = () => {
         setInStock('')
         setCategory('')
         setDescription('')
+        setUuid(uuidv4())
+        setFiles([])
     }
 
     const handleSubmit = () => {
@@ -87,10 +101,11 @@ const AddProduct = () => {
                 inStock,
                 category_id: category,
                 description,
+                uuid,
             }).then(() => {
                 new Noty({
                     type: 'success',
-                    text: 'Позиция добавлена успещно.'
+                    text: 'Позиция добавлена успешно.'
                 }).show()
 
                 setIsOpen(false)
@@ -118,10 +133,12 @@ const AddProduct = () => {
                                 <FilePond
                                     files={files}
                                     onupdatefiles={setFiles}
-                                    server="/api"
-                                    name="logo"
-                                    labelIdle='Выберите картинку'
+                                    server={server}
+                                    name="image"
+                                    labelIdle='Выберите картинки (макс. 10)'
                                     credits={false}
+                                    allowMultiple={true}
+                                    maxFiles={10}
                                 />
                             </Box>
                             <SimpleGrid columns={{sm: 1, md: 2}} spacing={1}>
@@ -180,7 +197,7 @@ const AddProduct = () => {
                                         placeholder='Категория'
                                         size='sm'
                                     >
-                                        {shop.categories.map((cat, i) => <option value={cat.id}
+                                        {categories.map((cat, i) => <option value={cat.id}
                                                                                        key={'category-option-' + i}>{cat.title}</option>)}
                                     </Select>
                                 </Box>

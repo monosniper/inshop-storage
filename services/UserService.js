@@ -5,9 +5,20 @@ import {$errors} from "../utils/errors";
 
 export default class UserService {
     static async requestUser() {
-        const response = await $api.get($apiRoutes.user);
+        try {
+            const response = await $api.get($apiRoutes.user);
 
-        return response.data;
+            return {
+                ok: true,
+                data: response.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data ? e.response.data.message : 'Произошла какая-то ошибка.',
+                data: null,
+            }
+        }
     }
 
     static async requestAccessToken(code) {

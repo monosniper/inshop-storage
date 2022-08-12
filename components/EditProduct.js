@@ -35,6 +35,7 @@ const EditProduct = (props) => {
     const [inStock, setInStock] = useState(props.inStock)
     const [category, setCategory] = useState(props.category)
     const [files, setFiles] = useState([])
+    const {id} = props
 
     const handleOpen = () => setIsOpen(true)
     const handleClose = () => setIsOpen(false)
@@ -45,14 +46,14 @@ const EditProduct = (props) => {
     const handleCategoryChange = e => setCategory(e.target.value)
 
     const handleSubmit = () => {
-        console.log('submit')
+        console.log('submit ', id)
     }
 
     registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
 
     return (
         <>
-            <Button onClick={handleOpen} colorScheme={'green'}><FaEdit /></Button>
+            <Button mx={1} onClick={handleOpen} colorScheme={'green'}><FaEdit /></Button>
 
             <Modal onClose={handleClose} closeOnOverlayClick={false} isOpen={isOpen} isCentered>
                 <ModalOverlay />

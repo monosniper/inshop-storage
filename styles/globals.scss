@@ -62,3 +62,21 @@ a {
   font-weight: 700;
   margin-bottom: 1rem;
 }
+
+.card {
+  background: #fff;
+  padding: 20px 40px;
+
+  &.card_between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &.card_end {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+}
+

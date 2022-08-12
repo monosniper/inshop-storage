@@ -1,0 +1,208 @@
+import React, {useEffect, useMemo, useState} from 'react';
+import {useRouter} from "next/router";
+import Head from "next/head";
+import DataTable from "../../components/DataTable";
+import AddProduct from "../../components/AddProduct";
+import Card from "../../components/Card";
+import store from "../../store/store";
+import {observer} from "mobx-react-lite";
+import {toJS} from "mobx";
+import {
+    Button,
+    Grid,
+    GridItem,
+    Input,
+    Modal, ModalBody, ModalCloseButton,
+    ModalContent, ModalFooter, ModalHeader,
+    ModalOverlay,
+    Select,
+    Text,
+    useDisclosure, useToast
+} from "@chakra-ui/react";
+import {$routes} from "../../http/routes";
+import ItemList from "../../components/ItemList";
+import styles from "../../styles/Form.module.scss";
+import shop from "../../store/shop";
+import LayoutOption from "../../components/LayoutOption";
+
+const Shop = (props) => {
+    const toast = useToast()
+    const router = useRouter()
+    const {id} = router.query
+    const data = useMemo(() => store.requestShop(id), [store.shops])
+
+    const domains = useMemo(() => store.domains, [store.domains]);
+
+    const [domain_id, setDomainId] = useState(null);
+    const [startTitle, setStartTitle] = useState('');
+    const [title, setTitle] = useState('');
+    const [slogan, setSlogan] = useState('');
+    const [language, setLanguage] = useState('');
+    const [shopName, setShopName] = useState('');
+    const layoutOptions = useMemo(() => generateLayoutOptions(), [shop.layoutOptions]);
+
+    useEffect(() => {
+        if(data) {
+            setStartTitle(data.options.title)
+            setTitle(data.options.title)
+            setSlogan(data.options.slogan)
+            setLanguage(data.options.language)
+            setDomainId(data.options.domain_id)
+        }
+    }, [data])
+
+    const onDomainIdChange = (e) => setDomainId(e.target.value)
+    const onTitleChange = (e) => setTitle(e.target.value)
+    const onSloganChange = (e) => setSlogan(e.target.value)
+    const onLanguageChange = (e) => setLanguage(e.target.value)
+    const onShopNameChange = (e) => setShopName(e.target.value)
+
+    const handleSave = () => {
+        shop.update({
+            title,
+            slogan,
+            language,
+        })
+        router.push($routes.index)
+    }
+
+    const { isOpen, onOpen, onClose } = useDisclosure()
+
+    const handleDelete = () => {
+        if(shopName === startTitle) {
+            shop.delete(id).then(rs => {
+                if(rs.ok) router.push($routes.index)
+                else {
+                    toast({
+                        title: rs.message ? rs.message : 'Произошла какая-то ошибка.',
+                        description: '',
+                        status: 'error',
+                        duration: 9000,
+                        isClosable: true,
+                    })
+                }
+            })
+        } else {
+            onClose()
+            toast({
+                title: 'Названия не совпадают',
+                description: '',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+            })
+        }
+    }
+
+    function generateLayoutOptions() {
+        let options = [];
+        let allChildren = [];
+        shop.layoutOptions.forEach(option => {
+            const children = shop.layoutOptions.filter(opt => opt.parent_id === option.id)
+
+            allChildren = [...allChildren, ...children.map(child => child.id)]
+
+            options.push({
+                ...option, children
+            })
+        })
+
+        options = options.filter(option => !allChildren.includes(option.id))
+
+        return options;
+    }
+
+    useEffect(() => {
+        store.requestDomains().then(() => {
+            if(domains.length) {
+                setDomainId(domains[0].id)
+            }
+        })
+    }, [])
+
+    return (
+        <>
+            <Head>
+                <title>Склад - {process.env.NEXT_PUBLIC_APP_NAME}</title>
+                <meta name="description" content='{ props.description }'/>
+                {/*<link rel="icon" href="/favicon.ico" />*/}
+            </Head>
+
+            <Grid templateColumns='repeat(2, 1fr)' mb={4} gap={4}>
+                <GridItem w='100%'>
+                    {data ? (
+                        <Card
+                            title={'Магазин '+data.options.title}
+                            linkText={'Назад'}
+                            linkHref={'/'}
+                        >
+                            <div className={styles.row}>
+                                <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Название</Text>
+                                <Input onChange={onTitleChange} placeholder='Название' value={title} />
+                            </div>
+                            <div className={styles.row}>
+                                <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Слоган</Text>
+                                <Input onChange={onSloganChange} placeholder='Слоган' value={slogan} />
+                            </div>
+                            <div className={styles.row}>
+                                <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Язык</Text>
+                                <Select onChange={onLanguageChange}>
+                                    {[
+                                        {label: 'Русский', value: 'ru'},
+                                        {label: 'Английский', value: 'en'},
+                                    ].map(lang => language === lang.value ? (
+                                        <option value={lang.value} selected>{lang.label}</option>
+                                    ) : (
+                                        <option value={lang.value}>{lang.label}</option>
+                                    ))}
+                                </Select>
+                            </div>
+                            <div className={styles.row}>
+                                <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Домен</Text>
+                                <Select onChange={onDomainIdChange} placeholder={'Выберите домен'}>
+                                    {domains.map(domain => {
+                                        if(domain.id === domain_id) return <option selected value={domain.id}>{domain.fullname}</option>
+                                        else return <option value={domain.id}>{domain.fullname}</option>
+                                    })}
+                                </Select>
+                            </div>
+
+                            <Button colorScheme={'facebook'} onClick={handleSave} mr={3}>Сохранить</Button>
+                            <Button colorScheme={'red'} onClick={onOpen}>Удалить</Button>
+
+                            <Modal isOpen={isOpen} onClose={onClose} isCentered>
+                                <ModalOverlay />
+                                <ModalContent>
+                                    <ModalHeader>Удаление магазина</ModalHeader>
+                                    <ModalCloseButton />
+                                    <ModalBody>
+                                        <p>Чтобы удалить магазин, введите его полное название (<b>{startTitle}</b>) ниже:</p>
+                                        <Input mt={2} placeholder={startTitle} value={shopName} onChange={onShopNameChange} />
+                                    </ModalBody>
+
+                                    <ModalFooter>
+                                        <Button onClick={handleDelete} colorScheme='red' mr={3}>
+                                            Удалить
+                                        </Button>
+                                        <Button variant='ghost' onClick={onClose}>Отмена</Button>
+                                    </ModalFooter>
+                                </ModalContent>
+                            </Modal>
+                        </Card>
+                    ) : <p>Загрузка...</p>}
+                </GridItem>
+                <GridItem w='100%'>
+                    {data ? (
+                        <Card
+                            title={'Визуальные настройки'}
+                        >
+                            {layoutOptions.map(option => <LayoutOption option={option} />)}
+                        </Card>
+                    ) : <p>Загрузка...</p>}
+                </GridItem>
+            </Grid>
+        </>
+    );
+};
+
+export default observer(Shop);

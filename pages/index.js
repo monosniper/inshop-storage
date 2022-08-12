@@ -1,18 +1,23 @@
 import Head from 'next/head'
-import Layout from "../components/Layout";
-import React, {useEffect, useState} from "react";
+import Layout from "../components/layout/Layout";
+import React, {useEffect, useMemo, useState} from "react";
 import {Grid, GridItem} from "@chakra-ui/react";
 import Card from "../components/Card";
 import Product from "../components/Product";
 import ItemList from "../components/ItemList";
 import UserItem from "../components/UserItem";
 import {$routes} from "../http/routes";
+import store from "../store/store";
+import Shops from "../components/Shops";
+import {observer} from "mobx-react-lite";
 
-export default function Home() {
+const Home = observer(() => {
   const [topSellers, setTopSellers] = useState([])
   const [lastClients, setLastClients] = useState([])
+  const shops = useMemo(() => store.shops, [store.shops])
 
   useEffect(() => {
+    store.requestShops()
     setTopSellers([
       {
         id: 1,
@@ -65,6 +70,15 @@ export default function Home() {
 
     <h1 className={'page-title'}>Личный кабинет</h1>
 
+    <Card
+        title={`Ваши магазины (${store.shops.length})`}
+        style={{marginBottom: '1rem'}}
+        linkHref={$routes.shops.create}
+        linkText={'Создать магазин'}
+    >
+      <Shops data={shops} />
+    </Card>
+
     <Grid templateColumns='repeat(2, 1fr)' gap={4}>
       <GridItem w='100%'>
         <Card
@@ -92,4 +106,6 @@ export default function Home() {
       </GridItem>
     </Grid>
   </>
-}
+})
+
+export default Home

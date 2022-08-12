@@ -1,8 +1,14 @@
 import store from "../store/store";
 import shop from "../store/shop";
+import {useMemo} from "react";
 
 export const useModules = () => {
+    const modules = useMemo(() => shop.modules, [shop.modules])
+
     return {
-        get: (name) => shop.options.modules && shop.options.modules.includes(name)
+        get: (name) => {
+            const module = modules.find(module => module.slug === name)
+            return modules && module && module.isActive
+        }
     }
 }

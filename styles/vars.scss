@@ -1,7 +1,9 @@
 $bg: #F1F4FF;
-$sidebar: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, #FFFFFF 100%);
+//$sidebar: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, #FFFFFF 100%);
+$sidebar: linear-gradient(90deg,#2b2f3c,#424964);
 $header_height: 80px;
 $height_without_header: calc(100vh - 80px);
 $top_margin: 100px;
 $gradient: linear-gradient(90deg, #242E56 0%, #6478C6 100%);
 $contrast_color: #242E56;
+$title_color: #4C505F;

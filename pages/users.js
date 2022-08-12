@@ -1,41 +1,14 @@
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import Head from "next/head";
 import {Checkbox, Td} from "@chakra-ui/react";
 import DataTable from "../components/DataTable";
+import shop from "../store/shop";
+import EditProduct from "../components/EditProduct";
+import DeleteBtn from "../components/table/DeleteBtn";
+import {observer} from "mobx-react-lite";
 
 const Users = () => {
-    const data = useMemo(() => [
-        {
-            id: 1,
-            fio: 'Имя Фамилия',
-            age: 22,
-            email: 'testemail@example.com',
-        },
-        {
-            id: 1,
-            fio: 'Имя Фамилия',
-            age: 22,
-            email: 'testemail@example.com',
-        },
-        {
-            id: 1,
-            fio: 'Имя Фамилия',
-            age: 22,
-            email: 'testemail@example.com',
-        },
-        {
-            id: 1,
-            fio: 'Имя Фамилия',
-            age: 22,
-            email: 'testemail@example.com',
-        },
-        {
-            id: 1,
-            fio: 'Имя Фамилия',
-            age: 22,
-            email: 'testemail@example.com',
-        },
-    ], [])
+    const data = useMemo(() => shop.clients, [shop.clients])
 
     const columns = useMemo(() => [
         {
@@ -47,44 +20,74 @@ const Users = () => {
             accessor: 'id',
         },
         {
+            Header: 'Почта',
+            accessor: 'email',
+        },
+        {
             Header: 'ФИО',
             accessor: 'fio',
         },
+        // {
+        //     Header: 'Возраст',
+        //     accessor: 'age',
+        //     filter: 'equal'
+        // },
         {
-            Header: 'Возраст',
-            accessor: 'age',
+            Header: 'Телефон',
+            accessor: 'phone',
             filter: 'equal'
         },
         {
-            Header: 'Почта',
-            accessor: 'email',
+            Header: 'Адрес',
+            accessor: 'address',
+            filter: 'search'
         },
     ], [])
 
     const custom_filters = [
         {
-            title: 'Возраст',
-            accessor: 'age',
-            type: 'equal',
+            title: 'Телефон',
+            accessor: 'phone',
+            type: 'search',
         },
         {
-            title: 'Поиск',
+            title: 'ФИО',
             accessor: 'fio',
+            type: 'search',
+            value: ''
+        },
+        {
+            title: 'Адрес',
+            accessor: 'address',
             type: 'search',
             value: ''
         },
     ]
 
-    const custom_tds = {
-        fio: (row, cell) => <Td {...cell.getCellProps()} style={{display: 'flex', gap: '.3rem', alignItems: 'center'}}>
-            <img src={`/assets/img/users/${row.original.id}.png`} style={{width: 40}} alt={`${row.original.fio}`}/>
-            <span>{row.original.fio}</span>
-        </Td>,
-    }
+    const custom_tds = {}
 
     const numeric = [
-        'age',
+        'phone',
     ]
+
+    const actions = [
+        (row) => <EditProduct
+            id={row.values.id}
+            title={row.original.title}
+            price={row.original.price}
+            inStock={row.original.inStock}
+            category={row.original.category}
+        />,
+        (row) => <DeleteBtn
+            id={row.values.id}
+            deleteItem={(id) => shop.deleteClient(id)}
+            requestItems={() => shop.requestClients()}
+        />
+    ]
+
+    useEffect(() => {
+        shop.requestClients()
+    }, [])
 
     return (
         <>
@@ -103,9 +106,12 @@ const Users = () => {
                 numeric={numeric}
                 custom_tds={custom_tds}
                 custom_filters={custom_filters}
+                actions={actions}
+                deleteMany={(ids) => shop.deleteClients(ids)}
+                requestItems={() => shop.requestClients()}
             />
         </>
     );
 };
 
-export default Users;
+export default observer(Users);

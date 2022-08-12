@@ -6,11 +6,13 @@ import styles from "../styles/Login.module.scss";
 import {observer} from "mobx-react-lite";
 import {useRouter} from "next/router";
 import {Button} from "@chakra-ui/react";
+import {$routes} from "../http/routes";
 
 const Login = observer(() => {
 
     const router = useRouter();
     const [state, setState] = useState()
+    const {returnUrl} = router.query
 
     const getState = () => {
         let state = localStorage.getItem('state')
@@ -33,10 +35,15 @@ const Login = observer(() => {
     useEffect(() => {
         setState(getState())
 
-        store.setUser(JSON.parse(localStorage.getItem('user')))
+        const user = localStorage.getItem(store.localStorage.user);
+        const token = localStorage.getItem(store.localStorage.token);
 
-        if (store.user) {
-            router.push('/');
+        if(user && token) {
+            store.setUser(JSON.parse(user))
+
+            if (store.authorized) {
+                router.push(returnUrl ? returnUrl : $routes.index);
+            }
         }
     }, [store.user])
 

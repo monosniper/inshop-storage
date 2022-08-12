@@ -6,21 +6,23 @@
   background: $sidebar;
 
   &__item {
-    color: $contrast_color;
+    color: #e5e5e5;
     display: flex;
     align-items: center;
     gap: .5rem;
-    padding: 10px 20px;
+    padding: 22px 20px;
     cursor: pointer;
     
     &:hover {
-      background: #efefef;
+      //background: #efefef;
+      background: #ffffff12;
     }
 
     &.active {
       font-weight: 500;
-      background: $gradient;
-      color: white;
+      //background: $gradient;
+      color: #9eaad9;
+      background: #ffffff1c;
     }
   }
 }

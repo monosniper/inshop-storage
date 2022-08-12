@@ -1,11 +1,13 @@
-import {makeAutoObservable, toJS} from "mobx";
+import {makeAutoObservable} from "mobx";
 import UserService from "../services/UserService";
 import ShopService from "../services/ShopService";
-import {defaultOptions} from "../utils/options";
 import shop from "./shop";
 
 class Store {
-    user = null;
+    user = {
+        auth: false,
+        data: null
+    };
     authorized = false;
     localStorage = {
         token: 'token',
@@ -23,21 +25,36 @@ class Store {
         clients: [],
     }
     shops = []
+    modules = []
+    domains = []
 
     constructor() {
         makeAutoObservable(this)
     }
 
     setUser(user) {
-        this.user = user
+        this.user.auth = true
+        this.user.data = user
+    }
+
+    setAuthorized(bool) {
+        this.authorized = bool;
     }
 
     setShops(shops) {
         this.shops = shops;
     }
 
+    setDomains(domains) {
+        this.domains = domains;
+    }
+
     setShop(shop) {
         this.shop = shop
+    }
+
+    setModules(modules) {
+        this.modules = modules
     }
 
     async requestAccessToken(code) {
@@ -57,18 +74,26 @@ class Store {
         return user;
     }
 
-    async requestShop(id) {
-        const data = this.shops.find(shop => shop.id+'' === id+'');
+    async requestModules() {
+        const modules = await ShopService.requestModules();
 
-        shop.setCategories(data.categories);
-        shop.setOptions(data.options);
-        shop.setId(data.id);
+        this.setModules(modules);
 
-        // const products = await ShopService.requestProducts(id);
-        // const clients = await ShopService.requestClients(id);
+        return modules;
+    }
 
-        shop.setProducts(data.products);
-        shop.setClients(data.clients);
+    requestShop(id) {
+        const data = this.shops.find(shop => shop.id === parseInt(id));
+
+        if(data) {
+            shop.setCategories(data.categories);
+            shop.setOptions(data.options);
+            shop.setId(data.id);
+            shop.setProducts(data.products);
+            shop.setClients(data.clients);
+            shop.setModules(data.modules);
+            shop.setLayoutOptions(data.layout);
+        }
 
         return data;
     }
@@ -79,13 +104,27 @@ class Store {
         localStorage.setItem(this.localStorage.shops, JSON.stringify(shops));
         this.setShops(shops);
 
+        shops.length && this.requestShop(shops[0].id)
+
         return shops;
     }
 
-    async getDomains() {
+    async requestDomains() {
         const domains = await UserService.requestDomains();
-
+        this.setDomains(domains)
         return domains;
+    }
+
+    async checkAuth() {
+        const rs = await UserService.requestUser();
+
+        if(rs.ok) {
+            localStorage.setItem(this.localStorage.user, JSON.stringify(rs.data));
+            this.setUser(rs.data);
+            this.setAuthorized(true)
+        }
+
+        return rs;
     }
 }
 

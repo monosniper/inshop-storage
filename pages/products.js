@@ -15,6 +15,7 @@ import EditProduct from "../components/EditProduct";
 import store from "../store/store";
 import {observer} from "mobx-react-lite";
 import shop from "../store/shop";
+import DeleteBtn from "../components/table/DeleteBtn";
 
 const Products = () => {
     const data = useMemo(() => shop.products, [shop.products])
@@ -49,10 +50,6 @@ const Products = () => {
             Header: 'Цена',
             accessor: 'price',
             filter: 'between'
-        },
-        {
-            Header: '',
-            accessor: 'actions',
         }
     ], [])
 
@@ -72,9 +69,9 @@ const Products = () => {
             title: 'Категория',
             accessor: 'category',
             type: 'select',
-            options: shop.categories.map(cat => {
+            options: shop.categories ? shop.categories.map(cat => {
                 return {value: cat.id, text: cat.title}
-            })
+            }) : []
         },
         {
             title: 'Поиск',
@@ -84,24 +81,30 @@ const Products = () => {
         },
     ]
 
+    const actions = [
+        (row) => <EditProduct
+            id={row.values.id}
+            title={row.original.title}
+            price={row.original.price}
+            inStock={row.original.inStock}
+            category={row.original.category}
+        />,
+        (row) => <DeleteBtn
+            id={row.values.id}
+            deleteItem={(id) => shop.deleteProduct(id)}
+            requestItems={() => shop.requestProducts()}
+        />
+    ]
+
     const custom_tds = {
         img: (row, cell) => <Td {...cell.getCellProps()}>
-            {/*<img src={`/assets/img/products/${row.original.id}.png`} alt={`${row.original.title}`}/>*/}
-            <img src={`/assets/img/products/1.png`} alt={`${row.original.title}`}/>
+            <img style={{maxWidth: 70}} src={row.original.preview_url} alt={`${row.original.title}`}/>
         </Td>,
         inStock: (row, cell) => <Td {...cell.getCellProps()} isNumeric>
             {cell.render('Cell')} шт.
         </Td>,
         price: (row, cell) => <Td {...cell.getCellProps()} isNumeric>
             ${cell.render('Cell')}
-        </Td>,
-        actions: (row, cell) => <Td {...cell.getCellProps()} isNumeric>
-            <EditProduct
-                title={row.original.title}
-                price={row.original.price}
-                inStock={row.original.inStock}
-                category={row.original.category}
-            />
         </Td>,
     }
 
@@ -131,6 +134,9 @@ const Products = () => {
                 numeric_ths={numeric_ths}
                 custom_tds={custom_tds}
                 custom_filters={custom_filters}
+                actions={actions}
+                deleteMany={(ids) => shop.deleteProducts(ids)}
+                requestItems={() => shop.requestProducts()}
             />
 
             <AddProduct />

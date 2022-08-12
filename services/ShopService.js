@@ -26,8 +26,205 @@ export default class ShopService {
         return response.data.data;
     }
 
+    static async getModules(id) {
+        try {
+            const rs = await $api.get($apiRoutes.shops.modules.list(id))
+            return {
+                ok: true,
+                data: rs.data.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async getCategories(id) {
+        try {
+            const rs = await $api.get($apiRoutes.shops.categories.list(id))
+            return {
+                ok: true,
+                data: rs.data.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async getClients(id) {
+        try {
+            const rs = await $api.get($apiRoutes.shops.clients.list(id))
+            return {
+                ok: true,
+                data: rs.data.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async getModule(shop_id, id) {
+        try {
+            await $api.get($apiRoutes.shops.get_module(shop_id, id))
+            return {
+                ok: true,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async toggleModule(shop_id, id, bool) {
+        try {
+            await $api.get($apiRoutes.shops.modules.toggle(shop_id, id, bool))
+            return {
+                ok: true,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async toggleLayout(shop_id, id, bool) {
+        try {
+            await $api.get($apiRoutes.shops.layoutOptions.toggle(shop_id, id, bool))
+            return {
+                ok: true,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async delete(id) {
+        try {
+            await $api.delete($apiRoutes.shops.delete(id))
+            return {
+                ok: true,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async deleteProduct(shop_id, id) {
+        try {
+            await $api.delete($apiRoutes.shops.products.delete(shop_id, id))
+            return {
+                ok: true,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async deleteCategory(shop_id, id) {
+        try {
+            await $api.delete($apiRoutes.shops.categories.delete(shop_id, id))
+            return {
+                ok: true,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async deleteClient(shop_id, id) {
+        try {
+            await $api.delete($apiRoutes.shops.clients.delete(shop_id, id))
+            return {
+                ok: true,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async deleteProducts(shop_id, ids) {
+        try {
+            await $api.post($apiRoutes.shops.products.deleteMany(shop_id), {ids})
+            return {
+                ok: true,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async deleteCategories(shop_id, ids) {
+        try {
+            await $api.post($apiRoutes.shops.categories.deleteMany(shop_id), {ids})
+            return {
+                ok: true,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async deleteClients(shop_id, ids) {
+        try {
+            await $api.post($apiRoutes.shops.clients.deleteMany(shop_id), {ids})
+            return {
+                ok: true,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async requestModules() {
+        const response = await $api.get($apiRoutes.modules.list);
+
+        return response.data;
+    }
+
     static async requestProducts(id) {
         const response = await $api.get($apiRoutes.shops.products.list(id));
+
+        return response.data.data;
+    }
+
+    static async requestLayoutOptions(id) {
+        const response = await $api.get($apiRoutes.shops.layoutOptions.list(id));
 
         return response.data.data;
     }
@@ -40,9 +237,7 @@ export default class ShopService {
 
 
     static async createProduct(shop_id, data) {
-        const response = await $api.post($apiRoutes.shops.products.create(shop_id), data);
-
-        return response;
+        return await $api.post($apiRoutes.shops.products.create(shop_id), data);
     }
 
     static async createCategory(shop_id, data) {
@@ -76,5 +271,27 @@ export default class ShopService {
         const response = await $api.get($apiRoutes.getMe('magaz'));
 
         return response.data.data;
+    }
+
+    static async create(data) {
+        try {
+            const response = await $api.post($apiRoutes.shops.create, data);
+            return {
+                ok: true,
+                data: response.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+                data: null,
+            }
+        }
+    }
+
+    static async save(id, options) {
+        const response = await $api.put($apiRoutes.shops.update(id), options);
+
+        return response.data;
     }
 }

@@ -3,6 +3,10 @@
 .card {
   background: #fff;
 
+  &+.card {
+    margin-top: 1rem;
+  }
+
   &__content {
     padding: 20px 40px;
   }

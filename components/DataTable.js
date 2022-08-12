@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Checkbox, Select, Table, TableContainer, Tbody, Td, Th, Thead, Tr} from "@chakra-ui/react";
 import styles from "../styles/Products.module.scss";
 import {BsArrowDown, BsArrowUp, BsSearch} from "react-icons/bs";
@@ -6,6 +6,7 @@ import Card from "./Card";
 import {usePagination, useTable, useFilters, useGlobalFilter, useSortBy} from "react-table";
 import card_styles from "../styles/Card.module.scss";
 import ControlledPagination from "./ControlledPagination";
+import shop from "../store/shop";
 
 function ToolBox({
                      custom_filters,
@@ -19,6 +20,8 @@ function ToolBox({
                      setGlobalFilter,
                      setFilter,
                      rows,
+                     deleteMany,
+                     requestItems,
                  }) {
     const handleFilterChange = (accessor, value, isGlobal=false) => {
         const newFilters = [...filters]
@@ -53,10 +56,10 @@ function ToolBox({
             <span onClick={e => handleFilterChange(accessor, !getValue(accessor))}
                   className={card_styles.field__title}>{title}</span>
         </div>,
-        search: ({i, accessor}) => <div key={'filter-search-' + i} className={card_styles.field}>
+        search: ({i, accessor, title}) => <div key={'filter-search-' + i} className={card_styles.field}>
             <span className={card_styles.field__icon}><BsSearch/></span>
             <input type="text" className={card_styles.field__input}
-                   onChange={e => handleFilterChange(accessor, e.target.value, true)} placeholder={'Поиск'}
+                   onChange={e => handleFilterChange(accessor, e.target.value, true)} placeholder={title}
                    value={getValue(accessor)}/>
         </div>,
         equal: ({i, accessor, title}) => <div key={'filter-equal-' + i} className={card_styles.field + ' ' + card_styles.field_out + ' ' + card_styles.field_check}>
@@ -92,7 +95,9 @@ function ToolBox({
     }
 
     const handleDeleteAll = () => {
-        console.log('handleDeleteAll', activeRows)
+        deleteMany && deleteMany(activeRows).then(() => {
+            requestItems && requestItems()
+        })
     }
 
     return <div className={card_styles.card__toolbox}>
@@ -153,11 +158,22 @@ const DataTable = ({
                        numeric_ths = [],
                        custom_tds = [],
                        check = true,
-                       custom_filters = []
+                       custom_filters = [],
+                       actions = [],
+                       deleteMany = false,
+                       requestItems = false,
                    }) => {
 
     const [filters, setFilters] = useState(custom_filters)
     const [activeRows, setActiveRows] = useState([])
+    const [tableColumns, setTableColumns] = useState(columns)
+
+    useEffect(() => {
+        if(actions.length) setTableColumns([{
+            Header: '',
+            accessor: 'actions'
+        }, ...tableColumns])
+    }, [])
 
     const handleCheck = (id) => {
         setActiveRows(activeRows.includes(id) ? activeRows.filter(i => i !== id) : [...activeRows, id])
@@ -181,7 +197,7 @@ const DataTable = ({
 
     const tableInstance = useTable(
         {
-            columns,
+            columns: tableColumns,
             data,
             initialState: {pageIndex: 0, pageSize: 10},
             // defaultColumn,
@@ -236,6 +252,8 @@ const DataTable = ({
                 setGlobalFilter={setGlobalFilter}
                 setFilter={setFilter}
                 rows={rows}
+                deleteMany={deleteMany}
+                requestItems={requestItems}
             />}
             footer={<TableFooter
                 pageIndex={pageIndex}
@@ -282,11 +300,13 @@ const DataTable = ({
                                     <Tr key={'data-body-tr-' + tr_i} {...row.getRowProps()}>
                                         {
                                             row.cells.map(cell => {
-                                                return custom_tds[cell.column.id] ? custom_tds[cell.column.id](row, cell) : (
+                                                return cell.column.id === 'actions' ? <Td isNumeric={numeric_ths.indexOf(cell.column.id) !== -1} {...cell.getCellProps()}>
+                                                    {actions.map(action => action(row))}
+                                                </Td> : custom_tds[cell.column.id] ? custom_tds[cell.column.id](row, cell) : (
                                                     <Td isNumeric={numeric_ths.indexOf(cell.column.id) !== -1} {...cell.getCellProps()}>{cell.render('Cell')}</Td>
                                                 )
-                                            })}
-
+                                            })
+                                        }
                                     </Tr>
                                 )
                             })
