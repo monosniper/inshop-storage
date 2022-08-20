@@ -5,7 +5,7 @@ import Shop from "./Shop";
 const Shops = ({ data }) => {
     return (
         <div className={styles.shops}>
-            {data.map((shop, i) => <Shop key={'shop-'+i} shop={shop} />)}
+            {data.map((shop, i) => <Shop key={'home-'+i} shop={shop} />)}
         </div>
     );
 };

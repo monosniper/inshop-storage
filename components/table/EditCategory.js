@@ -19,25 +19,18 @@ import {
     NumberInputStepper, Select,
     SimpleGrid,
     Stack,
-    Text
+    Text, useToast
 } from "@chakra-ui/react";
 import {FaEdit} from "react-icons/fa";
 import {API_URL} from "../../http";
+import ImageInput from "../ImageInput";
+import shop from "../../store/shop";
 
 const EditCategory = (props) => {
     const [isOpen, setIsOpen] = useState(false)
     const [title, setTitle] = useState(props.title)
-    const {id, uuid, icon_url} = props.row
-    const [files, setFiles] = useState([])
-    const server = {
-        url: API_URL,
-        process: 'files/upload/' + uuid + '/images',
-        fetch: 'files/get/' + uuid + '/images',
-        revert: {
-            url: 'files/delete/',
-            method: 'POST'
-        },
-    };
+    const {id, uuid, icon_url, icon_name} = props.row
+    const toast = useToast()
 
     const handleOpen = () => setIsOpen(true)
     const handleClose = () => setIsOpen(false)
@@ -45,7 +38,17 @@ const EditCategory = (props) => {
     const handleTitleChange = e => setTitle(e.target.value)
 
     const handleSubmit = () => {
-        console.log('submit ', icon_url)
+        shop.updateCategory(id, {title}).then(() => {
+            shop.requestCategories()
+            toast({
+                title: 'Изменения сохранены',
+                description: '',
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+            })
+            setIsOpen(false)
+        })
     }
 
     registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
@@ -71,13 +74,9 @@ const EditCategory = (props) => {
                                 />
                             </Box>
                             <Box>
-                                <FilePond
-                                    files={files}
-                                    onupdatefiles={setFiles}
-                                    server={server}
-                                    name="logo"
-                                    labelIdle='Выберите картинку'
-                                    credits={false}
+                                <ImageInput
+                                    uuid={uuid}
+                                    images={[icon_name]}
                                 />
                             </Box>
                         </Stack>

@@ -1,6 +1,4 @@
-import React, {useState} from 'react';
-import styles from '../styles/AddProduct.module.scss'
-import {HiPlus} from "react-icons/hi";
+import React, {useMemo, useState} from 'react';
 import {
     Box,
     Button,
@@ -19,37 +17,78 @@ import {
     Select,
     SimpleGrid,
     Stack,
-    Text
+    Text, useToast
 } from "@chakra-ui/react";
-import {FilePond, registerPlugin} from "react-filepond";
-import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation'
-import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 import "filepond/dist/filepond.min.css";
 import {FaEdit} from "react-icons/fa";
+import {useModules} from "../hooks/useModules";
+import {$modules} from "../utils/config";
+import shop from "../store/shop";
+import {observer} from "mobx-react-lite";
+import ImageInput from "./ImageInput";
+
+function CategorySelect({ category, handleCategoryChange, categories, category_id }) {
+    return <Box>
+        <Text mb='8px'>Категория</Text>
+        <Select
+            value={category}
+            onChange={handleCategoryChange}
+            size='sm'
+        >
+            {categories.map((category, i) => {
+                if(category.id === category_id) return <option selected value={category.id}>{category.title}</option>
+                else return <option selected value={category.id}>{category.title}</option>
+            })}
+        </Select>
+    </Box>;
+}
 
 const EditProduct = (props) => {
+    console.log(props.discount || 0)
     const [isOpen, setIsOpen] = useState(false)
     const [title, setTitle] = useState(props.title)
+    const [subtitle, setSubtitle] = useState(props.subtitle)
     const [price, setPrice] = useState(props.price)
     const [inStock, setInStock] = useState(props.inStock)
-    const [category, setCategory] = useState(props.category)
-    const [files, setFiles] = useState([])
+    const [category, setCategory] = useState(props.category_id)
+    const [discount, setDiscount] = useState(props.discount || 0)
+    const [uuid, setUuid] = useState(props.uuid);
+    const categories = useMemo(() => shop.categories, [shop.categories])
     const {id} = props
+    const modules = useModules()
+    const toast = useToast()
 
     const handleOpen = () => setIsOpen(true)
     const handleClose = () => setIsOpen(false)
 
     const handleTitleChange = e => setTitle(e.target.value)
+    const handleSubtitleChange = e => setSubtitle(e.target.value)
     const handlePriceChange = e => setPrice(e)
     const handleInStockChange = e => setInStock(e)
     const handleCategoryChange = e => setCategory(e.target.value)
+    const handleDiscountChange = e => setDiscount(e)
 
     const handleSubmit = () => {
-        console.log('submit ', id)
+        shop.updateProduct(id, {
+            title,
+            subtitle,
+            price,
+            inStock,
+            category_id: category,
+            discount,
+        }).then(() => {
+            shop.requestProducts()
+            toast({
+                title: 'Изменения сохранены',
+                description: '',
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+            })
+            setIsOpen(false)
+        })
     }
-
-    registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
 
     return (
         <>
@@ -67,6 +106,15 @@ const EditProduct = (props) => {
                                 <Input
                                     value={title}
                                     onChange={handleTitleChange}
+                                    placeholder=''
+                                    size='sm'
+                                />
+                            </Box>
+                            <Box>
+                                <Text mb='8px'>Подзаголовок</Text>
+                                <Input
+                                    value={subtitle}
+                                    onChange={handleSubtitleChange}
                                     placeholder=''
                                     size='sm'
                                 />
@@ -101,25 +149,38 @@ const EditProduct = (props) => {
                                     </NumberInput>
                                 </Box>
                             </SimpleGrid>
-                           <Box>
-                               <Text mb='8px'>Категория</Text>
-                               <Select
-                                   value={category}
-                                   onChange={handleCategoryChange}
-                                   placeholder='Категория'
-                                   size='sm'
-                               >
-                                   <option value="Кроссовки">Кроссовки</option>
-                               </Select>
-                           </Box>
+                            {modules.get($modules.discounts) ? <SimpleGrid columns={{sm: 1, md: 2}} spacing={2}>
+                                <CategorySelect
+                                    category={category}
+                                    category_id={props.category_id}
+                                    categories={categories}
+                                    handleCategoryChange={handleCategoryChange}
+                                />
+                                <Box>
+                                    <Text mb='8px'>Скидка (%)</Text>
+                                    <NumberInput
+                                        size='sm'
+                                        value={discount}
+                                        onChange={handleDiscountChange}
+                                    >
+                                        <NumberInputField />
+                                        <NumberInputStepper>
+                                            <NumberIncrementStepper />
+                                            <NumberDecrementStepper />
+                                        </NumberInputStepper>
+                                    </NumberInput>
+                                </Box>
+                            </SimpleGrid> : <CategorySelect
+                                category={category}
+                                category_id={props.category_id}
+                                categories={categories}
+                                handleCategoryChange={handleCategoryChange}
+                            />}
                             <Box>
-                                <FilePond
-                                    files={files}
-                                    onupdatefiles={setFiles}
-                                    server="/api"
-                                    name="logo"
-                                    labelIdle='Выберите картинку'
-                                    credits={false}
+                                <ImageInput
+                                    uuid={uuid}
+                                    images={props.images_names}
+                                    multiple={true}
                                 />
                             </Box>
                         </Stack>
@@ -134,4 +195,4 @@ const EditProduct = (props) => {
     );
 };
 
-export default EditProduct;
+export default observer(EditProduct);

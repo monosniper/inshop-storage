@@ -23,7 +23,7 @@ const Header = () => {
         store.requestShop(e.target.value)
         shop.requestProducts().then(() => {
             router.push({
-                pathname: router.asPath,
+                pathname: router.pathname,
                 query: {url: 'url'}
             })
         })
@@ -35,7 +35,7 @@ const Header = () => {
                 <Flex gap={5} align={'center'}>
                     <Logo />
                     <Select placeholder={'Выберите магазин'} onChange={handleShopChange}>
-                        {store.shops.map((sh, i) => <option selected={shop.id === sh.id} key={'shop-'+i} value={sh.id}>{sh.options.title}</option>)}
+                        {store.shops.map((sh, i) => <option selected={shop.id === sh.id} key={'home-'+i} value={sh.id}>{sh.options.title}</option>)}
                     </Select>
                 </Flex>
                 {store.authorized && <Menu>

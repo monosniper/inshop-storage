@@ -19,7 +19,7 @@ import {
     Select,
     SimpleGrid,
     Stack,
-    Text, Textarea
+    Text, Textarea, useToast
 } from "@chakra-ui/react";
 import {FilePond, registerPlugin} from "react-filepond";
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation'
@@ -30,6 +30,7 @@ import shop from "../store/shop";
 import Noty from "noty";
 import { v4 as uuidv4 } from 'uuid';
 import {API_URL} from "../http";
+import {$routes} from "../http/routes";
 
 const AddProduct = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -86,12 +87,14 @@ const AddProduct = () => {
         setFiles([])
     }
 
+    const toast = useToast()
+
     const handleSubmit = () => {
-        if(title === '') {
+        if(title.trim() === '') {
             validationError('title')
-        } else if(price === '') {
+        } else if(price.trim() === '') {
             validationError('price')
-        } else if(category === '') {
+        } else if(category.trim() === '') {
             validationError('category')
         } else {
             shop.createProduct({
@@ -102,11 +105,27 @@ const AddProduct = () => {
                 category_id: category,
                 description,
                 uuid,
-            }).then(() => {
-                new Noty({
-                    type: 'success',
-                    text: 'Позиция добавлена успешно.'
-                }).show()
+            }).then((rs) => {
+                if(rs.ok) {
+                    toast({
+                        title: 'Позиция добавлена успешно.',
+                        description: '',
+                        status: 'success',
+                        duration: 9000,
+                        isClosable: true,
+                    })
+
+                    shop.requestProducts()
+                }
+                else {
+                    toast({
+                        title: rs.message ? rs.message : 'Произошла какая-то ошибка.',
+                        description: '',
+                        status: 'error',
+                        duration: 9000,
+                        isClosable: true,
+                    })
+                }
 
                 setIsOpen(false)
                 resetFields()

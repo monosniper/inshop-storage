@@ -93,9 +93,17 @@ class Store {
             shop.setClients(data.clients);
             shop.setModules(data.modules);
             shop.setLayoutOptions(data.layout);
+            shop.setColors(data.colors);
+            shop.setSocialNetworks(data.social_networks);
+            shop.setDomain(data.domain);
+            shop.setReviews(data.reviews);
         }
 
         return data;
+    }
+
+    getCustomPage(id) {
+
     }
 
     async requestShops() {

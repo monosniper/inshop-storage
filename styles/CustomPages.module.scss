@@ -1,0 +1,34 @@
+.pages {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.page {
+  border-radius: 15px;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  color: #707070;
+  font-size: 18px;
+  border: 1px solid #DDDDDD;
+  box-shadow: 0 8px 53px -20px rgba(0, 0, 0, 0.25);
+  width: 350px;
+  max-width: 100%;
+  cursor: pointer;
+
+  &:hover {
+    background: #eaeaea;
+  }
+
+  &__title {
+    font-weight: bold;
+    color: black;
+  }
+
+  &__slug {
+    font-size: 14px;
+    color: black;
+  }
+}

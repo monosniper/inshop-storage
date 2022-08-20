@@ -1,9 +1,6 @@
 import React, {useState} from 'react';
 import Noty from "noty";
 import shop from "../store/shop";
-import {FilePond, registerPlugin} from "react-filepond";
-import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
-import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import styles from "../styles/AddProduct.module.scss";
 import {HiPlus} from "react-icons/hi";
 import {
@@ -19,21 +16,12 @@ import {
     Text,
 } from "@chakra-ui/react";
 import {v4 as uuidv4} from "uuid";
-import {API_URL} from "../http";
+import ImageInput from "./ImageInput";
 
 const AddCategory = () => {
     const [isOpen, setIsOpen] = useState(false)
     const [title, setTitle] = useState('')
-    const [files, setFiles] = useState([])
     const [uuid, setUuid] = useState(uuidv4());
-    const server = {
-        url: API_URL,
-        process: 'files/upload/' + uuid + '/images',
-        revert: {
-            url: 'files/delete/',
-            method: 'POST'
-        },
-    };
 
     const handleOpen = () => setIsOpen(true)
     const handleClose = () => setIsOpen(false)
@@ -54,11 +42,10 @@ const AddCategory = () => {
     const resetFields = () => {
         setTitle('')
         setUuid(uuidv4())
-        setFiles([])
     }
 
     const handleSubmit = () => {
-        if(title === '') {
+        if(title.trim() === '') {
             validationError('title')
         } else {
             shop.createCategory({
@@ -67,7 +54,7 @@ const AddCategory = () => {
             }).then(() => {
                 new Noty({
                     type: 'success',
-                    text: 'Категория добавлена успещно.'
+                    text: 'Категория добавлена успешно.'
                 }).show()
 
                 setIsOpen(false)
@@ -75,8 +62,6 @@ const AddCategory = () => {
             })
         }
     }
-
-    registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
 
     return (
         <>
@@ -92,13 +77,8 @@ const AddCategory = () => {
                     <ModalBody>
                         <Stack spacing={2}>
                             <Box>
-                                <FilePond
-                                    files={files}
-                                    onupdatefiles={setFiles}
-                                    server={server}
-                                    name="logo"
-                                    labelIdle='Выберите картинку'
-                                    credits={false}
+                                <ImageInput
+                                    uuid={uuid}
                                 />
                             </Box>
                             <Box>

@@ -26,9 +26,175 @@ export default class ShopService {
         return response.data.data;
     }
 
+    static async saveColor(shop_id, color_id, value) {
+        try {
+            const rs = await $api.put($apiRoutes.shops.colors.save(shop_id, color_id), {value})
+            return {
+                ok: true,
+                data: rs.data.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async updateCategory(shop_id, id, data) {
+        try {
+            const rs = await $api.put($apiRoutes.shops.categories.update(shop_id, id), data)
+            return {
+                ok: true,
+                data: rs.data.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async createCustomPage(shop_id, data) {
+        try {
+            const rs = await $api.post($apiRoutes.shops.customPages.create(shop_id), data)
+            console.log(rs)
+            return {
+                ok: true,
+                data: rs.data.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async saveBanner(shop_id, data, banner_id) {
+        try {
+            const rs = await $api.put($apiRoutes.shops.banners.update(shop_id, banner_id), data)
+            return {
+                ok: true,
+                data: rs.data.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async createBanner(shop_id, data) {
+        try {
+            const rs = await $api.post($apiRoutes.shops.banners.create(shop_id), data)
+            return {
+                ok: true,
+                data: rs.data.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async saveSocialNetwork(shop_id, social_network_id, value) {
+        try {
+            const rs = await $api.put($apiRoutes.shops.social_networks.save(shop_id, social_network_id), {value})
+            return {
+                ok: true,
+                data: rs.data.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async updateCustomPage(shop_id, id, data) {
+        try {
+            const rs = await $api.put($apiRoutes.shops.customPages.update(shop_id, id), data)
+            return {
+                ok: true,
+                data: rs.data.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async resetColor(shop_id, color_id) {
+        try {
+            const rs = await $api.get($apiRoutes.shops.colors.reset(shop_id, color_id))
+            return {
+                ok: true,
+                data: rs.data.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
     static async getModules(id) {
         try {
             const rs = await $api.get($apiRoutes.shops.modules.list(id))
+            return {
+                ok: true,
+                data: rs.data.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async getBanners(id) {
+        try {
+            const rs = await $api.get($apiRoutes.shops.banners.list(id))
+            return {
+                ok: true,
+                data: rs.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async requestCustomPages(id) {
+        try {
+            const rs = await $api.get($apiRoutes.shops.customPages.list(id))
+            return {
+                ok: true,
+                data: rs.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async getColors(id) {
+        try {
+            const rs = await $api.get($apiRoutes.shops.colors.list(id))
             return {
                 ok: true,
                 data: rs.data.data,
@@ -56,9 +222,39 @@ export default class ShopService {
         }
     }
 
+    static async getReviews(id) {
+        try {
+            const rs = await $api.get($apiRoutes.shops.reviews.list(id))
+            return {
+                ok: true,
+                data: rs.data.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
     static async getClients(id) {
         try {
             const rs = await $api.get($apiRoutes.shops.clients.list(id))
+            return {
+                ok: true,
+                data: rs.data.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async getBannerTypes() {
+        try {
+            const rs = await $api.get($apiRoutes.banners.types)
             return {
                 ok: true,
                 data: rs.data.data,
@@ -141,6 +337,20 @@ export default class ShopService {
         }
     }
 
+    static async deleteBanner(shop_id, id) {
+        try {
+            await $api.delete($apiRoutes.shops.banners.delete(shop_id, id))
+            return {
+                ok: true,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
     static async deleteCategory(shop_id, id) {
         try {
             await $api.delete($apiRoutes.shops.categories.delete(shop_id, id))
@@ -155,9 +365,37 @@ export default class ShopService {
         }
     }
 
+    static async deleteReview(shop_id, id) {
+        try {
+            await $api.delete($apiRoutes.shops.reviews.delete(shop_id, id))
+            return {
+                ok: true,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
     static async deleteClient(shop_id, id) {
         try {
             await $api.delete($apiRoutes.shops.clients.delete(shop_id, id))
+            return {
+                ok: true,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async deleteCustomPage(shop_id, id) {
+        try {
+            await $api.delete($apiRoutes.shops.customPages.delete(shop_id, id))
             return {
                 ok: true,
             }
@@ -186,6 +424,20 @@ export default class ShopService {
     static async deleteCategories(shop_id, ids) {
         try {
             await $api.post($apiRoutes.shops.categories.deleteMany(shop_id), {ids})
+            return {
+                ok: true,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async deleteReviews(shop_id, ids) {
+        try {
+            await $api.post($apiRoutes.shops.reviews.deleteMany(shop_id), {ids})
             return {
                 ok: true,
             }
@@ -235,21 +487,48 @@ export default class ShopService {
         return response.data.data;
     }
 
+    static async createReview(shop_id, data) {
+        try {
+            const response = await $api.post($apiRoutes.shops.reviews.create(shop_id), data);
+            return {
+                ok: true,
+                data: response.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+                data: null,
+            }
+        }
+    }
 
     static async createProduct(shop_id, data) {
-        return await $api.post($apiRoutes.shops.products.create(shop_id), data);
+        try {
+            const response = await $api.post($apiRoutes.shops.products.create(shop_id), data);
+            return {
+                ok: true,
+                data: response.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+                data: null,
+            }
+        }
     }
 
     static async createCategory(shop_id, data) {
-        const response = await $api.post($apiRoutes.shops.categories.create(shop_id), data);
-
-        return response;
+        return await $api.post($apiRoutes.shops.categories.create(shop_id), data);
     }
 
     static async updateProduct(shop_id, product_id, data) {
-        const response = await $api.put($apiRoutes.shops.products.update(shop_id, product_id), data);
+        return await $api.put($apiRoutes.shops.products.update(shop_id, product_id), data);
+    }
 
-        return response;
+    static async updateReview(shop_id, review_id, data) {
+        return await $api.put($apiRoutes.shops.reviews.update(shop_id, review_id), data);
     }
 
     static async register(domain_id, options) {

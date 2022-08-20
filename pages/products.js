@@ -39,7 +39,7 @@ const Products = () => {
         },
         {
             Header: 'Категория',
-            accessor: 'category',
+            accessor: 'category_id',
         },
         {
             Header: 'В наличии',
@@ -67,7 +67,7 @@ const Products = () => {
         },
         {
             title: 'Категория',
-            accessor: 'category',
+            accessor: 'category_id',
             type: 'select',
             options: shop.categories ? shop.categories.map(cat => {
                 return {value: cat.id, text: cat.title}
@@ -83,11 +83,7 @@ const Products = () => {
 
     const actions = [
         (row) => <EditProduct
-            id={row.values.id}
-            title={row.original.title}
-            price={row.original.price}
-            inStock={row.original.inStock}
-            category={row.original.category}
+            {...row.original}
         />,
         (row) => <DeleteBtn
             id={row.values.id}
@@ -105,6 +101,12 @@ const Products = () => {
         </Td>,
         price: (row, cell) => <Td {...cell.getCellProps()} isNumeric>
             ${cell.render('Cell')}
+        </Td>,
+        category_id: (row, cell) => <Td {...cell.getCellProps()}>
+            {() => {
+                const category = shop.categories.find(cat => cat.id === row.original.category_id)
+                return category ? category.title : '';
+            }}
         </Td>,
     }
 

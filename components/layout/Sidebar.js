@@ -15,13 +15,16 @@ import {useModules} from "../../hooks/useModules";
 import {observer} from "mobx-react-lite";
 import shop from "../../store/shop";
 import {toJS} from "mobx";
+import {$modules} from "../../utils/config";
+import {MdOutlineViewCarousel, MdReviews} from "react-icons/md";
+import {RiPagesLine} from "react-icons/ri";
 
 function SidebarItem({ children, icon, href, externalLink=false }) {
     const [itemClass, setItemClass] = useState(styles.sidebar__item);
     const router = useRouter()
 
     useEffect(() => {
-        if(router.pathname === href) setItemClass(styles.sidebar__item + ' ' + styles.active)
+        if(router.pathname.startsWith(href)) setItemClass(styles.sidebar__item + ' ' + styles.active)
         else setItemClass(styles.sidebar__item)
     }, [router.pathname])
 
@@ -42,12 +45,15 @@ const Sidebar = () => {
     return (
         <div className={styles.sidebar}>
             <SidebarItem icon={<Icon as={GoHome} w={6} h={6} />} href={$routes.index}>Личный кабинет</SidebarItem>
+            <SidebarItem icon={<Icon as={FaRegMoneyBillAlt} w={6} h={6} />} href={$routes.modules}>Финансы</SidebarItem>
             <SidebarItem icon={<Icon as={AiOutlineAppstore} w={6} h={6} />} href={$routes.products}>Склад</SidebarItem>
-            {modules.get('auth') ? <SidebarItem icon={<Icon as={FiUsers} w={6} h={6} />} href={$routes.users}>Клиенты</SidebarItem> : null}
+            {modules.get($modules.auth) ? <SidebarItem icon={<Icon as={FiUsers} w={6} h={6} />} href={$routes.users}>Клиенты</SidebarItem> : null}
             <SidebarItem icon={<Icon as={BiCategoryAlt} w={6} h={6} />} href={$routes.categories}>Категории</SidebarItem>
             <SidebarItem icon={<Icon as={BiPlug} w={6} h={6} />} href={$routes.modules}>Модули</SidebarItem>
-            <SidebarItem icon={<Icon as={FaRegMoneyBillAlt} w={6} h={6} />} href={$routes.modules}>Финансы</SidebarItem>
-            {/*{shop.id  && <SidebarItem icon={<Icon as={IoConstructOutline} w={6} h={6} />} href={$externalRoutes.constructor(shop.id)} externalLink>Конструктор</SidebarItem>}*/}
+            {modules.get($modules.banner) ? <SidebarItem icon={<Icon as={MdOutlineViewCarousel} w={6} h={6} />} href={$routes.banners}>Баннеры</SidebarItem> : null}
+            {modules.get($modules.custom_pages) ? <SidebarItem icon={<Icon as={RiPagesLine} w={6} h={6} />} href={$routes.custom_pages.index}>Доп. страницы</SidebarItem> : null}
+            {modules.get($modules.reviews) ? <SidebarItem icon={<Icon as={MdReviews} w={6} h={6} />} href={$routes.reviews}>Отзывы</SidebarItem> : null}
+            {/*{home.id  && <SidebarItem icon={<Icon as={IoConstructOutline} w={6} h={6} />} href={$externalRoutes.constructor(home.id)} externalLink>Конструктор</SidebarItem>}*/}
         </div>
     );
 };

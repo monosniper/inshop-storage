@@ -1,16 +1,23 @@
 export const $routes = {
-    index: '/',
+    index: '/home',
     login: '/login',
+    banners: '/banners',
+    custom_pages: {
+        index: '/custom_pages',
+        create: '/custom_pages/create',
+        page: (id) => `/custom_pages/${id}`,
+    },
     no_shop: '/no_shop',
     categories: '/categories',
     modules: '/modules',
-    modules_shop: '/modules/shop',
+    modules_shop: '/modules/home',
     products: '/products',
     users: '/users',
-    shop: (id) => `/constructor/${id}`,
+    reviews: '/reviews',
+    shop: (id) => `/home/${id}`,
     undefined: '/undefined',
     shops: {
-        create: '/shop/create'
+        create: '/home/create'
     }
 }
 
@@ -18,6 +25,12 @@ export const $apiRoutes = {
     getMe: (name) => `/get-shop?domain_name=${name}`,
     user: '/user',
     token: '/oauth/token',
+    files: {
+        delete: '/files/delete',
+    },
+    banners: {
+        types: '/banners/types'
+    },
     domains: {
         list: 'user/domains',
     },
@@ -34,6 +47,29 @@ export const $apiRoutes = {
             delete: (shop_id, client_id) => `/shops/${shop_id}/clients/${client_id}`,
             deleteMany: (shop_id) => `/shops/${shop_id}/clients/deleteMany`,
         },
+        banners: {
+            list: (id) => `/shops/${id}/banners`,
+            create: (id) => `/shops/${id}/banners`,
+            update: (shop_id, banner_id) => `/shops/${shop_id}/banners/${banner_id}`,
+            delete: (shop_id, banner_id) => `/shops/${shop_id}/banners/${banner_id}`,
+        },
+        colors: {
+            list: (id) => `/shops/${id}/colors`,
+            create: (id) => `/shops/${id}/colors`,
+            update: (shop_id, color_id) => `/shops/${shop_id}/colors/${color_id}`,
+            save: (shop_id, color_id) => `/shops/${shop_id}/colors/${color_id}/save`,
+            reset: (shop_id, color_id) => `/shops/${shop_id}/colors/${color_id}/reset`,
+            delete: (shop_id, color_id) => `/shops/${shop_id}/colors/${color_id}`,
+            deleteMany: (shop_id) => `/shops/${shop_id}/colors/deleteMany`,
+        },
+        social_networks: {
+            list: (id) => `/shops/${id}/social_networks`,
+            create: (id) => `/shops/${id}/social_networks`,
+            update: (shop_id, social_network_id) => `/shops/${shop_id}/social_networks/${social_network_id}`,
+            save: (shop_id, social_network_id) => `/shops/${shop_id}/social_networks/${social_network_id}/save`,
+            delete: (shop_id, social_network_id) => `/shops/${shop_id}/social_networks/${social_network_id}`,
+            deleteMany: (shop_id) => `/shops/${shop_id}/social_networks/deleteMany`,
+        },
         products: {
             list: (id) => `/shops/${id}/products`,
             create: (id) => `/shops/${id}/products`,
@@ -41,12 +77,26 @@ export const $apiRoutes = {
             delete: (shop_id, product_id) => `/shops/${shop_id}/products/${product_id}`,
             deleteMany: (shop_id) => `/shops/${shop_id}/products/deleteMany`,
         },
+        reviews: {
+            list: (id) => `/shops/${id}/reviews`,
+            create: (id) => `/shops/${id}/reviews`,
+            update: (shop_id, review_id) => `/shops/${shop_id}/reviews/${review_id}`,
+            delete: (shop_id, review_id) => `/shops/${shop_id}/reviews/${review_id}`,
+            deleteMany: (shop_id) => `/shops/${shop_id}/reviews/deleteMany`,
+        },
         categories: {
             list: (id) => `/shops/${id}/categories`,
             create: (id) => `/shops/${id}/categories`,
             update: (shop_id, category_id) => `/shops/${shop_id}/categories/${category_id}`,
             delete: (shop_id, category_id) => `/shops/${shop_id}/categories/${category_id}`,
             deleteMany: (shop_id) => `/shops/${shop_id}/categories/deleteMany`,
+        },
+        customPages: {
+            list: (id) => `/shops/${id}/customPages`,
+            create: (id) => `/shops/${id}/customPages`,
+            update: (shop_id, custom_page_id) => `/shops/${shop_id}/customPages/${custom_page_id}`,
+            delete: (shop_id, custom_page_id) => `/shops/${shop_id}/customPages/${custom_page_id}`,
+            toggle: (shop_id, custom_page_id, bool) => `/shops/${shop_id}/customPages/${custom_page_id}/${bool ? 'activate' : 'deactivate'}`,
         },
         modules: {
             list: (id) => `/shops/${id}/modules`,

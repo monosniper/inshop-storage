@@ -1,10 +1,13 @@
 import React from 'react';
+import {Skeleton, Stack} from "@chakra-ui/react";
 
 const Loading = () => {
     return (
-        <p>
-          Загрузка...
-        </p>
+        <Stack>
+            <Skeleton height={'40px'} />
+            <Skeleton height={'40px'} />
+            <Skeleton height={'40px'} />
+        </Stack>
     );
 };
 

@@ -8,6 +8,7 @@ import Image from "next/image";
 import Moment from 'react-moment';
 import 'moment-timezone';
 import 'moment/locale/ru';
+import {$routes} from "../http/routes";
 
 const Shop = ({ shop }) => {
     const { title, slogan } = useMemo(() => shop.options.slogan ? shop.options : {title:'',slogan:''}, [shop.options]);
@@ -36,7 +37,7 @@ const Shop = ({ shop }) => {
                     ) : null}
                 </div>
                 <div className={styles.shop__btn}>
-                    <Link href={'shop/'+shop.id}>
+                    <Link href={$routes.shop(shop.id)}>
                         <Button>Настройки</Button>
                     </Link>
                 </div>
