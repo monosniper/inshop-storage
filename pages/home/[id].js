@@ -201,7 +201,7 @@ const Shop = (props) => {
                                 title={'Социальные сети'}
                             >
                                 <VStack spacing={2}>
-                                    {social_networks.map(social_network => <SocialNetwork social_network={social_network} />)}
+                                    {social_networks.map((social_network, i) => <SocialNetwork key={'social-'+i} social_network={social_network} />)}
                                 </VStack>
                             </Card>
                         </>
@@ -212,9 +212,9 @@ const Shop = (props) => {
                         <Card
                             title={'Визуальные настройки'}
                         >
-                            {layoutOptions.map(option => <LayoutOption option={option} />)}
+                            {layoutOptions.map((option, i) => <LayoutOption key={'layout-'+i} option={option} />)}
                             <br/>
-                            {colors.map(color => <ColorPicker color={color} />)}
+                            {colors.map((color, i) => <ColorPicker key={'picker-'+i} color={color} />)}
                         </Card>
                     ) : <p>Загрузка...</p>}
                 </GridItem>

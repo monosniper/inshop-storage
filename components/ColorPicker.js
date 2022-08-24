@@ -42,15 +42,16 @@ const ColorPicker = ({ color }) => {
                 <div className={styles.title}>{color.name}</div>
             </Tooltip>
             <InputGroup>
-                <InputLeftElement
-                    pointerEvents='none'
-                    children={<div className={styles.value} style={{background:value}} />}
-                />
+                <InputLeftElement pointerEvents='none'>
+                    <div className={styles.value} style={{background:value}} />
+                </InputLeftElement>
                 <Input type='text' value={value} onChange={handleChange} placeholder='#000000' />
-                <InputRightElement children={<>
-                    <Button mr={1} onClick={handleReset} size={'sm'} colorScheme='green'><GrPowerReset /></Button>
-                    <Button onClick={handleSave} size={'sm'} colorScheme='facebook'><FaSave /></Button>
-                </>} />
+                <InputRightElement>
+                    <>
+                        <Button mr={1} onClick={handleReset} size={'sm'} colorScheme='green'><GrPowerReset /></Button>
+                        <Button onClick={handleSave} size={'sm'} colorScheme='facebook'><FaSave /></Button>
+                    </>
+                </InputRightElement>
             </InputGroup>
         </div>
     );

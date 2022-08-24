@@ -41,10 +41,12 @@ const CustomPages = () => {
                 title={'Дополнительные страницы'}
             >
                 <div className={styles.pages}>
-                    {customPages.map((page, i) => <Link href={$routes.custom_pages.page(page.id)}><div className={styles.page} key={'page-'+i}>
-                        <div className={styles.page__title}>{page.title}</div>
-                        <div className={styles.page__slug}>/{page.slug}</div>
-                    </div></Link>)}
+                    {customPages.map((page, i) => <Link key={'link-'+i} href={$routes.custom_pages.page(page.id)}>
+                        <div className={styles.page} key={'page-'+i}>
+                            <div className={styles.page__title}>{page.title}</div>
+                            <div className={styles.page__slug}>/{page.slug}</div>
+                        </div>
+                    </Link>)}
                     {customPages.length >= 3 ? null : <Link href={$routes.custom_pages.create}><div className={styles.page}>Добавить страницу</div></Link>}
                 </div>
             </Card>

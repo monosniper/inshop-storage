@@ -73,12 +73,12 @@ const Module = ({ module, hasModule =false }) => {
                     <ModalBody>
                         <p>Данный модуль не будет работать без пречисленных ниже модулей:</p>
                         <List mt={3} spacing={3}>
-                            {module.dependencies.map(dep => {
+                            {module.dependencies.map((dep, i) => {
                                 const has = shop.hasModule(dep.id);
                                 const ModuleIcon = has ? AiFillCheckCircle : AiFillCloseCircle;
                                 const color = has ? 'green.500' : 'red.500' ;
 
-                                return <ListItem>
+                                return <ListItem key={'list-item-'+i}>
                                     <ListIcon as={ModuleIcon} color={color} />
                                     {dep.title}
                                 </ListItem>

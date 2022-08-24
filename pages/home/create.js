@@ -72,7 +72,7 @@ const Create = () => {
                         <div className={styles.row}>
                             <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Домен</Text>
                             <Select onChange={onDomainIdChange} placeholder={'Выберите домен'}>
-                                {domains.map(domain => <option value={domain.id}>{domain.fullname}</option>)}
+                                {domains.map((domain, i) => <option key={'domain-option-'+i} value={domain.id}>{domain.fullname}</option>)}
                             </Select>
                         </div>
                         <div className={styles.row}>
@@ -89,7 +89,7 @@ const Create = () => {
                                 {[
                                     {label: 'Русский', value: 'ru'},
                                     {label: 'Английский', value: 'en'},
-                                ].map(lang => <option value={lang.value}>{lang.label}</option>)}
+                                ].map((lang, i) => <option key={'option-'+i} value={lang.value}>{lang.label}</option>)}
                             </Select>
                         </div>
                         <Button colorScheme={'facebook'} onClick={save}>Сохранить</Button>

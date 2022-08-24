@@ -55,22 +55,21 @@ const Banners = () => {
         return object;
     }
 
-    const getFilesFromBanner = () => {
-        const object = {}
-
-        for(let i=1;i<=3;i++) {
-            object[i] = shop.banners.find(banner => banner.order === 1)
-                ? useState([{
-                    source: 'image',
-                    options: {
-                        type: 'local'
-                    }
-                }])
-                : useState([])
-        }
-
-        return object;
-    }
+    // const getFilesFromBanner = () => {
+    //     const object = {}
+    //
+    //     for(let i=1;i<=3;i++) {
+    //         object[i] = useState(shop.banners.find(banner => banner.order === 1)
+    //             ? [{
+    //                 source: 'image',
+    //                 options: {
+    //                     type: 'local'
+    //                 }
+    //             }] : [])
+    //     }
+    //
+    //     return object;
+    // }
 
     const banners = useMemo(() => shop.banners, [shop.banners])
     const [currentBanner, setCurrentBanner] = useState(1)

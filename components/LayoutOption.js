@@ -27,7 +27,7 @@ const LayoutOption = ({ option, className='' }) => {
                 <Switch isChecked={active} onChange={handleChange} />
             </div>
             {children.length ? <div className={styles.option__children}>
-                {children.map(child => <LayoutOption className={styles.child} option={child} />)}
+                {children.map((child, i) => <LayoutOption key={'layout-'+i} className={styles.child} option={child} />)}
             </div> : null}
         </div>
     );
