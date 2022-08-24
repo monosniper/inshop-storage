@@ -16,6 +16,7 @@ export const $routes = {
     reviews: '/reviews',
     shop: (id) => `/home/${id}`,
     undefined: '/undefined',
+    profile: '/profile',
     shops: {
         create: '/home/create'
     }
@@ -23,7 +24,11 @@ export const $routes = {
 
 export const $apiRoutes = {
     getMe: (name) => `/get-shop?domain_name=${name}`,
-    user: '/user',
+    user: {
+        index: '/user',
+        change_password: '/user/change-password',
+        update: '/user/update',
+    },
     token: '/oauth/token',
     files: {
         delete: '/files/delete',

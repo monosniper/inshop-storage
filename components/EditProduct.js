@@ -27,22 +27,7 @@ import {$modules} from "../utils/config";
 import shop from "../store/shop";
 import {observer} from "mobx-react-lite";
 import ImageInput from "./ImageInput";
-
-function CategorySelect({ category, handleCategoryChange, categories, category_id }) {
-    return <Box>
-        <Text mb='8px'>Категория</Text>
-        <Select
-            value={category}
-            onChange={handleCategoryChange}
-            size='sm'
-        >
-            {categories.map((category, i) => {
-                if(category.id === category_id) return <option selected value={category.id}>{category.title}</option>
-                else return <option selected value={category.id}>{category.title}</option>
-            })}
-        </Select>
-    </Box>;
-}
+import CategorySelect from "./CategorySelect";
 
 const EditProduct = (props) => {
     console.log(props.discount || 0)

@@ -44,7 +44,6 @@ const CustomPage = () => {
     const [startTitle, setStartTitle] = useState('');
     const [pageName, setPageName] = useState('');
     const [title, setTitle] = useState('');
-    const [slug, setSlug] = useState('');
     const [description, setDescription] = useState('');
     const [content, setContent] = useState('');
 
@@ -52,7 +51,6 @@ const CustomPage = () => {
         if(data) {
             setStartTitle(data.title)
             setTitle(data.title)
-            setSlug(data.slug)
             setDescription(data.description)
             setContent(data.content)
         }
@@ -63,14 +61,12 @@ const CustomPage = () => {
     }, [])
 
     const onTitleChange = (e) => setTitle(e.target.value)
-    const onSlugChange = (e) => setSlug(e.target.value)
     const onDescriptionChange = (e) => setDescription(e.target.value)
     const onPageNameChange = (e) => setPageName(e.target.value)
 
     const handleSave = () => {
         shop.updateCustomPage(data.id,{
             title,
-            slug,
             description,
             content: stateToHTML(editorState.getCurrentContent()),
         }).then(() => {
@@ -153,10 +149,6 @@ const CustomPage = () => {
                                 <div className={styles.row}>
                                     <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Название</Text>
                                     <Input onChange={onTitleChange} placeholder='Название' value={title} />
-                                </div>
-                                <div className={styles.row}>
-                                    <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Путь <small>(Например: {shop.domain}/<b>help</b>)</small></Text>
-                                    <Input onChange={onSlugChange} placeholder='Слоган' value={slug} />
                                 </div>
                                 <div className={styles.row}>
                                     <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Описание</Text>

@@ -6,7 +6,41 @@ import {$errors} from "../utils/errors";
 export default class UserService {
     static async requestUser() {
         try {
-            const response = await $api.get($apiRoutes.user);
+            const response = await $api.get($apiRoutes.user.index);
+
+            return {
+                ok: true,
+                data: response.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data ? e.response.data.message : 'Произошла какая-то ошибка.',
+                data: null,
+            }
+        }
+    }
+
+    static async updateUser(data) {
+        try {
+            const response = await $api.put($apiRoutes.user.update, data);
+
+            return {
+                ok: true,
+                data: response.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data ? e.response.data.message : 'Произошла какая-то ошибка.',
+                data: null,
+            }
+        }
+    }
+
+    static async changePassword(data) {
+        try {
+            const response = await $api.post($apiRoutes.user.change_password, data);
 
             return {
                 ok: true,

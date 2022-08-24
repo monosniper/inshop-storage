@@ -1,11 +1,11 @@
 import Noty from "noty";
 import {useToast} from "@chakra-ui/react";
 
-export const showError = (title, description='') => {
+export const showError = (text) => {
     // const toast = useToast()
-    // new Noty({
-    //     type: 'error', text
-    // }).show()
+    new Noty({
+        type: 'error', text
+    }).show()
     // toast({
     //     title,
     //     description,

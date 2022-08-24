@@ -69,9 +69,9 @@ class Store {
         const user = await UserService.requestUser();
 
         localStorage.setItem(this.localStorage.user, JSON.stringify(user));
-        this.setUser(user);
+        this.setUser(user.data);
 
-        return user;
+        return user.data;
     }
 
     async requestModules() {
@@ -80,6 +80,14 @@ class Store {
         this.setModules(modules);
 
         return modules;
+    }
+
+    async updateUser(data) {
+        return await UserService.updateUser(data)
+    }
+
+    async changePassword(data) {
+        return await UserService.changePassword(data)
     }
 
     requestShop(id) {
@@ -100,10 +108,6 @@ class Store {
         }
 
         return data;
-    }
-
-    getCustomPage(id) {
-
     }
 
     async requestShops() {

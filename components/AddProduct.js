@@ -31,6 +31,9 @@ import Noty from "noty";
 import { v4 as uuidv4 } from 'uuid';
 import {API_URL} from "../http";
 import {$routes} from "../http/routes";
+import {$modules} from "../utils/config";
+import CategorySelect from "./CategorySelect";
+import {useModules} from "../hooks/useModules";
 
 const AddProduct = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -49,9 +52,11 @@ const AddProduct = () => {
     const [inStock, setInStock] = useState('')
     const [category, setCategory] = useState('')
     const [description, setDescription] = useState('')
+    const [discount, setDiscount] = useState(0)
     const [properties, setProperties] = useState([])
     const [files, setFiles] = useState([])
     const categories  = useMemo(() => shop.categories, [shop.categories])
+    const modules = useModules()
 
     const handleOpen = () => setIsOpen(true)
     const handleClose = () => setIsOpen(false)
@@ -62,6 +67,7 @@ const AddProduct = () => {
     const handleInStockChange = e => setInStock(e)
     const handleCategoryChange = e => setCategory(e.target.value)
     const handleDescriptionChange = e => setDescription(e.target.value)
+    const handleDiscountChange = e => setDiscount(e)
 
     const validationError = (type) => {
         const errors = {
@@ -83,6 +89,7 @@ const AddProduct = () => {
         setInStock('')
         setCategory('')
         setDescription('')
+        setDiscount('')
         setUuid(uuidv4())
         setFiles([])
     }
@@ -102,6 +109,7 @@ const AddProduct = () => {
                 subtitle,
                 price,
                 inStock,
+                discount,
                 category_id: category,
                 description,
                 uuid,
@@ -180,7 +188,7 @@ const AddProduct = () => {
                                     />
                                 </Box>
                             </SimpleGrid>
-                            <SimpleGrid columns={{sm: 1, md: 3}} spacing={1}>
+                            <SimpleGrid columns={{sm: 1, md: 2}} spacing={1}>
                                 <Box>
                                     <Text mb='8px'>Цена</Text>
                                     <NumberInput
@@ -209,18 +217,30 @@ const AddProduct = () => {
                                         </NumberInputStepper>
                                     </NumberInput>
                                 </Box>
-                                <Box>
-                                    <Text mb='8px'>Категория</Text>
-                                    <Select
-                                        onChange={handleCategoryChange}
-                                        placeholder='Категория'
-                                        size='sm'
-                                    >
-                                        {categories.map((cat, i) => <option value={cat.id}
-                                                                                       key={'category-option-' + i}>{cat.title}</option>)}
-                                    </Select>
-                                </Box>
                             </SimpleGrid>
+                            {modules.get($modules.discounts) ? <SimpleGrid columns={{sm: 1, md: 2}} spacing={2}>
+                                <CategorySelect
+                                    categories={categories}
+                                    handleCategoryChange={handleCategoryChange}
+                                />
+                                <Box>
+                                    <Text mb='8px'>Скидка (%)</Text>
+                                    <NumberInput
+                                        size='sm'
+                                        value={discount}
+                                        onChange={handleDiscountChange}
+                                    >
+                                        <NumberInputField />
+                                        <NumberInputStepper>
+                                            <NumberIncrementStepper />
+                                            <NumberDecrementStepper />
+                                        </NumberInputStepper>
+                                    </NumberInput>
+                                </Box>
+                            </SimpleGrid> : <CategorySelect
+                                categories={categories}
+                                handleCategoryChange={handleCategoryChange}
+                            />}
                             <Box>
                                 <Text mb='8px'>Описание</Text>
                                 <Textarea

@@ -35,13 +35,11 @@ const Create = () => {
     const toast = useToast()
 
     const [title, setTitle] = useState('');
-    const [slug, setSlug] = useState('');
     const [description, setDescription] = useState('');
     const [editorState, setEditorState] = useState(() => createEditorStateWithText(''))
     const [editor, setEditor] = useState(null)
 
     const onTitleChange = (e) => setTitle(e.target.value)
-    const onSlugChange = (e) => setSlug(e.target.value)
     const onDescriptionChange = (e) => setDescription(e.target.value)
 
     const toolbarPlugin = createToolbarPlugin();
@@ -51,11 +49,9 @@ const Create = () => {
     const save = () => {
         if(
             title.trim() !== ''
-            && slug.trim() !== ''
         ) {
             shop.createCustomPage({
                 title,
-                slug,
                 description,
                 content: stateToHTML(editorState.getCurrentContent()),
             }).then(rs => {
@@ -72,7 +68,7 @@ const Create = () => {
             })
         } else {
             toast({
-                title: 'Необходимо заполнить поля название и путь.',
+                title: 'Необходимо заполнить поле название.',
                 description: '',
                 status: 'error',
                 duration: 9000,
@@ -100,10 +96,6 @@ const Create = () => {
                 <div className={styles.row}>
                     <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Название</Text>
                     <Input onChange={onTitleChange} placeholder='Название' value={title} />
-                </div>
-                <div className={styles.row}>
-                    <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Путь до страницы <small>(Например: {shop.domain}/<b>help</b>)</small></Text>
-                    <Input onChange={onSlugChange} placeholder='help' value={slug} />
                 </div>
                 <div className={styles.row}>
                     <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Описание</Text>
