@@ -17,6 +17,7 @@ export const $routes = {
     shop: (id) => `/home/${id}`,
     undefined: '/undefined',
     profile: '/profile',
+    domains: '/domains',
     shops: {
         create: '/home/create'
     }
@@ -38,6 +39,8 @@ export const $apiRoutes = {
     },
     domains: {
         list: 'user/domains',
+        delete: (id) => `domains/${id}`,
+        deleteMany: `domains/deleteMany`,
     },
     modules: {
         list: 'modules',

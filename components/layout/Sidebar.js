@@ -44,7 +44,7 @@ const Sidebar = () => {
 
     return (
         <div className={styles.sidebar}>
-            <SidebarItem icon={<Icon as={GoHome} w={6} h={6} />} href={$routes.index}>Личный кабинет</SidebarItem>
+            <SidebarItem icon={<Icon as={GoHome} w={6} h={6} />} href={$routes.index}>Мои магазины</SidebarItem>
             <SidebarItem icon={<Icon as={FaRegMoneyBillAlt} w={6} h={6} />} href={$routes.modules}>Финансы</SidebarItem>
             <SidebarItem icon={<Icon as={AiOutlineAppstore} w={6} h={6} />} href={$routes.products}>Склад</SidebarItem>
             {modules.get($modules.auth) ? <SidebarItem icon={<Icon as={FiUsers} w={6} h={6} />} href={$routes.users}>Клиенты</SidebarItem> : null}

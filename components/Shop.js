@@ -9,6 +9,7 @@ import Moment from 'react-moment';
 import 'moment-timezone';
 import 'moment/locale/ru';
 import {$routes} from "../http/routes";
+import {FaExternalLinkAlt} from "react-icons/fa";
 
 const Shop = ({ shop }) => {
     const { title, slogan } = useMemo(() => shop.options.slogan ? shop.options : {title:'',slogan:''}, [shop.options]);
@@ -16,10 +17,15 @@ const Shop = ({ shop }) => {
     return (
         <div className={styles.shop}>
             <div className={styles.shop__header}>
-                <div className={styles.shop__logo}>
-                    <Image src={ShopImg} />
+                <div className={styles.shop__left}>
+                    <div className={styles.shop__logo}>
+                        <Image src={shop.logo_url} width={60} height={60} />
+                    </div>
+                    <div className={styles.shop__title}>{title}</div>
                 </div>
-                <div className={styles.shop__title}>{title}</div>
+                <a rel={'noreferrer'} target={'_blank'} href={'https://'+shop.domain}>
+                    <FaExternalLinkAlt />
+                </a>
             </div>
             <div className={styles.shop__descriprion}>
                 {slogan.length > 100 ? slogan.substring(0, 100) + '...' : slogan}

@@ -9,6 +9,8 @@ import shop from "../../store/shop";
 import {$routes} from "../../http/routes";
 import {observer} from "mobx-react-lite";
 import {showError} from "../../utils/showError";
+import {v4 as uuidv4} from "uuid";
+import ImageInput from "../../components/ImageInput";
 
 const Create = () => {
     const router = useRouter()
@@ -16,6 +18,7 @@ const Create = () => {
 
     const domains = useMemo(() => store.domains, [store.domains]);
 
+    const [uuid, setUuid] = useState(uuidv4());
     const [domain_id, setDomainId] = useState(null);
     const [title, setTitle] = useState('');
     const [slogan, setSlogan] = useState('');
@@ -27,7 +30,7 @@ const Create = () => {
     const onLanguageChange = (e) => setLanguage(e.target.value)
 
     const save = () => {
-        shop.create(domain_id, {
+        shop.create(domain_id, uuid, {
             title,
             slogan,
             language,
@@ -69,6 +72,10 @@ const Create = () => {
                         linkText={'Назад'}
                         linkHref={'/'}
                     >
+                        <div className={styles.row}>
+                            <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Логотип</Text>
+                            <ImageInput uuid={uuid} />
+                        </div>
                         <div className={styles.row}>
                             <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Домен</Text>
                             <Select onChange={onDomainIdChange} placeholder={'Выберите домен'}>

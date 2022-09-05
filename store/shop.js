@@ -1,6 +1,7 @@
 import {makeAutoObservable, toJS} from "mobx";
 import ShopService from "../services/ShopService";
 import store from "./store";
+import UserService from "../services/UserService";
 
 class Shop {
     loaded = false
@@ -213,9 +214,9 @@ class Shop {
         return await this.save()
     }
 
-    async create(domain_id, options) {
+    async create(domain_id, uuid, options) {
         return await ShopService.create({
-            user_id: store.user.data.id, domain_id, options
+            user_id: store.user.data.id, domain_id, uuid, options
         })
     }
 

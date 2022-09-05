@@ -51,6 +51,9 @@ const Header = () => {
                         <MenuItem onClick={() => handleGoTo($routes.profile)}>
                             Профиль
                         </MenuItem>
+                        <MenuItem onClick={() => handleGoTo($routes.domains)}>
+                            Домены
+                        </MenuItem>
                         <MenuItem onClick={handleLogout}>
                             Выход
                         </MenuItem>

@@ -21,6 +21,35 @@ export default class UserService {
         }
     }
 
+    static async deleteDomain(id) {
+        try {
+            await $api.delete($apiRoutes.domains.delete(id))
+            return {
+                ok: true,
+            }
+        } catch (e) {
+            showError(e.response.data.message)
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async deleteDomains(ids) {
+        try {
+            await $api.post($apiRoutes.domains.deleteMany, {ids})
+            return {
+                ok: true,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
     static async updateUser(data) {
         try {
             const response = await $api.put($apiRoutes.user.update, data);

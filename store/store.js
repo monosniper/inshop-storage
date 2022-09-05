@@ -127,6 +127,14 @@ class Store {
         return domains;
     }
 
+    async deleteDomain(id) {
+        return await UserService.deleteDomain(id)
+    }
+
+    async deleteDomains(ids) {
+        return await UserService.deleteDomains(ids)
+    }
+
     async checkAuth() {
         const rs = await UserService.requestUser();
 

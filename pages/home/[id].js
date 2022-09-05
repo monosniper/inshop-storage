@@ -16,7 +16,7 @@ import {
     ModalContent, ModalFooter, ModalHeader,
     ModalOverlay,
     Select, Skeleton,
-    Text,
+    Text, Textarea,
     useDisclosure, useToast, VStack
 } from "@chakra-ui/react";
 import {$routes} from "../../http/routes";
@@ -26,6 +26,8 @@ import shop from "../../store/shop";
 import LayoutOption from "../../components/LayoutOption";
 import ColorPicker from "../../components/ColorPicker";
 import SocialNetwork from "../../components/SocialNetwork";
+import {showMessage} from "../../utils/showMessage";
+import ImageInput from "../../components/ImageInput";
 
 const Shop = (props) => {
     const toast = useToast()
@@ -37,6 +39,7 @@ const Shop = (props) => {
 
     const [domain_id, setDomainId] = useState(null);
     const [startTitle, setStartTitle] = useState('');
+    const [orderText, setOrderText] = useState('');
     const [title, setTitle] = useState('');
     const [slogan, setSlogan] = useState('');
     const [language, setLanguage] = useState('');
@@ -56,6 +59,7 @@ const Shop = (props) => {
         }
     }, [data])
 
+    const onOrderTextChange = (e) => setOrderText(e.target.value)
     const onDomainIdChange = (e) => setDomainId(e.target.value)
     const onTitleChange = (e) => setTitle(e.target.value)
     const onSloganChange = (e) => setSlogan(e.target.value)
@@ -69,6 +73,12 @@ const Shop = (props) => {
             language,
         })
         router.push($routes.index)
+    }
+
+    const handleSaveOrderText = () => {
+        shop.update({
+            orderText,
+        }).then(() => showMessage('Изменения сохранены'))
     }
 
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -97,6 +107,10 @@ const Shop = (props) => {
                 isClosable: true,
             })
         }
+    }
+
+    const addInstLink = () => {
+        setOrderText(orderText + '%instagram%')
     }
 
     function generateLayoutOptions() {
@@ -144,6 +158,10 @@ const Shop = (props) => {
                                 linkText={'Назад'}
                                 linkHref={'/'}
                             >
+                                <div className={styles.row}>
+                                    <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Логотип</Text>
+                                    <ImageInput images={[data.logo_name]} uuid={data.uuid} />
+                                </div>
                                 <div className={styles.row}>
                                     <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Название</Text>
                                     <Input onChange={onTitleChange} placeholder='Название' value={title} />
@@ -203,6 +221,15 @@ const Shop = (props) => {
                                 <VStack spacing={2}>
                                     {social_networks.map((social_network, i) => <SocialNetwork key={'social-'+i} social_network={social_network} />)}
                                 </VStack>
+                            </Card>
+                            <Card
+                                title={'Текст заказа'}
+                            >
+                                <div className={styles.row}>
+                                    <Button mb={2} onClick={addInstLink}>Вставить инстаграмм ссылку</Button>
+                                    <Textarea onChange={onOrderTextChange} placeholder='Для заказа обратитесь в наш инстаграмм' value={orderText} />
+                                </div>
+                                <Button colorScheme={'facebook'} onClick={handleSaveOrderText}>Сохранить</Button>
                             </Card>
                         </>
                     ) : <Skeleton height={100} />}
