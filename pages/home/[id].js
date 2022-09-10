@@ -15,8 +15,8 @@ import {
     Modal, ModalBody, ModalCloseButton,
     ModalContent, ModalFooter, ModalHeader,
     ModalOverlay,
-    Select, Skeleton,
-    Text, Textarea,
+    Select, Skeleton, Switch,
+    Text, Textarea, Tooltip,
     useDisclosure, useToast, VStack
 } from "@chakra-ui/react";
 import {$routes} from "../../http/routes";
@@ -28,6 +28,18 @@ import ColorPicker from "../../components/ColorPicker";
 import SocialNetwork from "../../components/SocialNetwork";
 import {showMessage} from "../../utils/showMessage";
 import ImageInput from "../../components/ImageInput";
+import {useModules} from "../../hooks/useModules";
+import {$modules} from "../../utils/config";
+
+function OrderTextForm({onOrderTextChange, orderText, addInstLink}) {
+    return <>
+        <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Текст заказа</Text>
+        <div className={styles.row}>
+            <Button mb={2} onClick={addInstLink}>Вставить инстаграмм ссылку</Button>
+            <Textarea onChange={onOrderTextChange} placeholder='Для заказа обратитесь в наш инстаграмм' value={orderText} />
+        </div>
+    </>;
+}
 
 const Shop = (props) => {
     const toast = useToast()
@@ -44,6 +56,11 @@ const Shop = (props) => {
     const [slogan, setSlogan] = useState('');
     const [language, setLanguage] = useState('');
     const [shopName, setShopName] = useState('');
+    const [qiwiPublicKey, setQiwiPublicKey] = useState('');
+    const [qiwiTheme, setQiwiTheme] = useState('');
+    const [qiwiPay, setQiwiPay] = useState(false);
+    const [currency, setCurrency] = useState('$');
+    const modules = useModules()
 
     const layoutOptions = useMemo(() => generateLayoutOptions(), [shop.layoutOptions]);
     const colors = useMemo(() => shop.colors, [shop.colors]);
@@ -56,6 +73,10 @@ const Shop = (props) => {
             setSlogan(data.options.slogan)
             setLanguage(data.options.language)
             setDomainId(data.options.domain_id)
+            setQiwiPay(data.options.qiwiPay)
+            setQiwiPublicKey(data.options.qiwiPublicKey)
+            setQiwiTheme(data.options.qiwiTheme)
+            setCurrency(data.options.currency)
         }
     }, [data])
 
@@ -65,6 +86,10 @@ const Shop = (props) => {
     const onSloganChange = (e) => setSlogan(e.target.value)
     const onLanguageChange = (e) => setLanguage(e.target.value)
     const onShopNameChange = (e) => setShopName(e.target.value)
+    const onQiwiPublicKeyChange = (e) => setQiwiPublicKey(e.target.value)
+    const onQiwiThemeChange = (e) => setQiwiTheme(e.target.value)
+    const onCurrencyChange = (e) => setCurrency(e.target.value)
+    const handleQiwiPayChange = (e) => setQiwiPay(e.target.checked)
 
     const handleSave = () => {
         shop.update({
@@ -75,9 +100,13 @@ const Shop = (props) => {
         router.push($routes.index)
     }
 
-    const handleSaveOrderText = () => {
+    const handleSavePayment = () => {
         shop.update({
             orderText,
+            qiwiPay,
+            qiwiPublicKey,
+            qiwiTheme,
+            currency,
         }).then(() => showMessage('Изменения сохранены'))
     }
 
@@ -222,15 +251,6 @@ const Shop = (props) => {
                                     {social_networks.map((social_network, i) => <SocialNetwork key={'social-'+i} social_network={social_network} />)}
                                 </VStack>
                             </Card>
-                            <Card
-                                title={'Текст заказа'}
-                            >
-                                <div className={styles.row}>
-                                    <Button mb={2} onClick={addInstLink}>Вставить инстаграмм ссылку</Button>
-                                    <Textarea onChange={onOrderTextChange} placeholder='Для заказа обратитесь в наш инстаграмм' value={orderText} />
-                                </div>
-                                <Button colorScheme={'facebook'} onClick={handleSaveOrderText}>Сохранить</Button>
-                            </Card>
                         </>
                     ) : <Skeleton height={100} />}
                 </GridItem>
@@ -244,6 +264,40 @@ const Shop = (props) => {
                             {colors.map((color, i) => <ColorPicker key={'picker-'+i} color={color} />)}
                         </Card>
                     ) : <p>Загрузка...</p>}
+                    <Card
+                        title={'Платежи'}
+                    >
+                        <div className={styles.row}>
+                            <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Валюта</Text>
+                            <Select onChange={onCurrencyChange}>
+                                {[
+                                    {label: 'Доллар ($)', value: '$'},
+                                    {label: 'Российский рубль (₽)', value: '₽'},
+                                    {label: 'Украинская гривна (₴)', value: '₴'},
+                                ].map(curr => currency === curr.value ? (
+                                    <option value={curr.value} selected>{curr.label}</option>
+                                ) : (
+                                    <option value={curr.value}>{curr.label}</option>
+                                ))}
+                            </Select>
+                        </div>
+                        {modules.get($modules.payment.qiwi) ? <>
+                                <div className={styles.switch__text}>Оплата по киви</div>
+                                <Switch sx={{mb:4}} isChecked={qiwiPay} onChange={handleQiwiPayChange} />
+                                {qiwiPay ? <>
+                                    <div className={styles.row}>
+                                        <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Qiwi Public key</Text>
+                                        <Input onChange={onQiwiPublicKeyChange} placeholder='Название' value={qiwiPublicKey}/>
+                                    </div>
+                                    <div className={styles.row}>
+                                        <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Qiwi Theme name</Text>
+                                        <Input onChange={onQiwiThemeChange} placeholder='Название' value={qiwiTheme} />
+                                    </div>
+                                </> : <OrderTextForm addInstLink={addInstLink} onOrderTextChange={onOrderTextChange} orderText={orderText} />}
+                            </>
+                            : <OrderTextForm addInstLink={addInstLink} onOrderTextChange={onOrderTextChange} orderText={orderText} />}
+                        <Button colorScheme={'facebook'} onClick={handleSavePayment}>Сохранить</Button>
+                    </Card>
                 </GridItem>
             </Grid>
         </>
