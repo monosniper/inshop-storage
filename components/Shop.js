@@ -19,7 +19,8 @@ const Shop = ({ shop }) => {
             <div className={styles.shop__header}>
                 <div className={styles.shop__left}>
                     <div className={styles.shop__logo}>
-                        <Image src={shop.logo_url} width={60} height={60} />
+                        <img src={shop.logo_url} alt={title} width={60} height={60}/>
+                        {/*<Image src={shop.logo_url} width={60} height={60} />*/}
                     </div>
                     <div className={styles.shop__title}>{title}</div>
                 </div>
