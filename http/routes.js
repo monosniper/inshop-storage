@@ -18,6 +18,7 @@ export const $routes = {
     undefined: '/undefined',
     profile: '/profile',
     domains: '/domains',
+    orders: '/orders',
     shops: {
         create: '/home/create'
     }
@@ -54,6 +55,13 @@ export const $apiRoutes = {
             update: (shop_id, client_id) => `/shops/${shop_id}/clients/${client_id}`,
             delete: (shop_id, client_id) => `/shops/${shop_id}/clients/${client_id}`,
             deleteMany: (shop_id) => `/shops/${shop_id}/clients/deleteMany`,
+        },
+        orders: {
+            list: (id) => `/shops/${id}/orders`,
+            create: (id) => `/shops/${id}/orders`,
+            update: (shop_id, client_id) => `/shops/${shop_id}/orders/${client_id}`,
+            delete: (shop_id, client_id) => `/shops/${shop_id}/orders/${client_id}`,
+            deleteMany: (shop_id) => `/shops/${shop_id}/orders/deleteMany`,
         },
         banners: {
             list: (id) => `/shops/${id}/banners`,

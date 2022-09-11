@@ -1,0 +1,18 @@
+.shipping-data {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+  flex-wrap: wrap;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+
+  &+.shipping-data {
+    margin-top: .3rem;
+  }
+
+  &__key {
+    font-weight: bold;
+  }
+}

@@ -207,6 +207,21 @@ export default class ShopService {
         }
     }
 
+    static async getOrders(id) {
+        try {
+            const rs = await $api.get($apiRoutes.shops.orders.list(id))
+            return {
+                ok: true,
+                data: rs.data.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
     static async getCategories(id) {
         try {
             const rs = await $api.get($apiRoutes.shops.categories.list(id))
@@ -337,6 +352,20 @@ export default class ShopService {
         }
     }
 
+    static async deleteOrder(shop_id, id) {
+        try {
+            await $api.delete($apiRoutes.shops.orders.delete(shop_id, id))
+            return {
+                ok: true,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
     static async deleteBanner(shop_id, id) {
         try {
             await $api.delete($apiRoutes.shops.banners.delete(shop_id, id))
@@ -452,6 +481,20 @@ export default class ShopService {
     static async deleteClients(shop_id, ids) {
         try {
             await $api.post($apiRoutes.shops.clients.deleteMany(shop_id), {ids})
+            return {
+                ok: true,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async deleteOrders(shop_id, ids) {
+        try {
+            await $api.post($apiRoutes.shops.orders.deleteMany(shop_id), {ids})
             return {
                 ok: true,
             }

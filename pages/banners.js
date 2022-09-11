@@ -47,8 +47,9 @@ const Banners = () => {
         const object = {}
 
         for(let i=1;i<=3;i++) {
-            object[i] = shop.banners.find(banner => banner.order === 1)
-                ? shop.banners.find(banner => banner.order === 1)[name]
+            const banner = shop.banners.find(banner => banner.order === i);
+            object[i] = banner
+                ? banner[name]
                 : undefined
         }
 
@@ -215,6 +216,7 @@ const Banners = () => {
     }
 
     const handleDelete = () => {
+        console.log(currentBanner, ids)
         shop.deleteBanner(ids[currentBanner]).then(() => {
             shop.requestBanners()
             onClose()

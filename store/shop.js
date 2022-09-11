@@ -19,6 +19,7 @@ class Shop {
     banners = []
     customPages = []
     reviews = []
+    orders = []
 
     constructor() {
         makeAutoObservable(this)
@@ -31,6 +32,10 @@ class Shop {
 
     setOptions(options) {
         this.options = options;
+    }
+
+    setOrders(orders) {
+        this.orders = orders;
     }
 
     setReviews(reviews) {
@@ -197,6 +202,14 @@ class Shop {
         return rs;
     }
 
+    async requestOrders() {
+        const rs = await ShopService.getOrders(this.id)
+        if(rs.data) {
+            this.setOrders(rs.data)
+        }
+        return rs;
+    }
+
     async requestReviews() {
         const rs = await ShopService.getReviews(this.id)
         if(rs.data) {
@@ -260,8 +273,16 @@ class Shop {
         return await ShopService.deleteClients(this.id, ids)
     }
 
+    async deleteOrders(ids) {
+        return await ShopService.deleteOrders(this.id, ids)
+    }
+
     async deleteBanner(id) {
         return await ShopService.deleteBanner(this.id, id)
+    }
+
+    async deleteOrder(id) {
+        return await ShopService.deleteOrder(this.id, id)
     }
 
     async getModule(id) {

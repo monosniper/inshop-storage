@@ -102,7 +102,7 @@ export default class UserService {
         try {
             response =  await $api.get($apiRoutes.shops.list);
         } catch (e) {
-            showError($errors.network_error)
+            // showError($errors.network_error)
         }
 
         return response.data;

@@ -105,6 +105,7 @@ class Store {
             shop.setSocialNetworks(data.social_networks);
             shop.setDomain(data.domain);
             shop.setReviews(data.reviews);
+            shop.setOrders(data.orders);
         }
 
         return data;
