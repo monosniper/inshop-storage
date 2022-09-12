@@ -30,6 +30,7 @@ import {showMessage} from "../../utils/showMessage";
 import ImageInput from "../../components/ImageInput";
 import {useModules} from "../../hooks/useModules";
 import {$modules} from "../../utils/config";
+import ShopFilter from "../../components/ShopFilter";
 
 function OrderTextForm({onOrderTextChange, orderText, addInstLink}) {
     return <>
@@ -63,16 +64,18 @@ const Shop = (props) => {
     const modules = useModules()
 
     const layoutOptions = useMemo(() => generateLayoutOptions(), [shop.layoutOptions]);
+    const filters = useMemo(() => shop.filters, [shop.filters]);
     const colors = useMemo(() => shop.colors, [shop.colors]);
     const social_networks = useMemo(() => shop.social_networks, [shop.social_networks]);
 
     useEffect(() => {
         if(data) {
+            console.log(data, data.domain_id)
             setStartTitle(data.options.title)
             setTitle(data.options.title)
             setSlogan(data.options.slogan)
             setLanguage(data.options.language)
-            setDomainId(data.options.domain_id)
+            setDomainId(data.domain_id)
             setQiwiPay(data.options.qiwiPay)
             setQiwiPublicKey(data.options.qiwiPublicKey)
             setQiwiTheme(data.options.qiwiTheme)
@@ -96,6 +99,7 @@ const Shop = (props) => {
             title,
             slogan,
             language,
+            domain_id,
         })
         router.push($routes.index)
     }
@@ -161,12 +165,7 @@ const Shop = (props) => {
     }
 
     useEffect(() => {
-        store.requestDomains().then(() => {
-            if(domains.length) {
-                setDomainId(domains[0].id)
-            }
-        })
-
+        store.requestDomains()
         shop.requestColors()
     }, [])
 
@@ -216,6 +215,7 @@ const Shop = (props) => {
                                     <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Домен</Text>
                                     <Select onChange={onDomainIdChange} placeholder={'Выберите домен'}>
                                         {domains.map(domain => {
+                                            console.log(domain_id, domain.id)
                                             if(domain.id === domain_id) return <option selected value={domain.id}>{domain.fullname}</option>
                                             else return <option value={domain.id}>{domain.fullname}</option>
                                         })}
@@ -251,6 +251,11 @@ const Shop = (props) => {
                                     {social_networks.map((social_network, i) => <SocialNetwork key={'social-'+i} social_network={social_network} />)}
                                 </VStack>
                             </Card>
+                            <Card
+                                title={'Фильтры'}
+                            >
+                                {filters.map((filter, i) => <ShopFilter key={'filter-'+i} filter={filter} />)}
+                            </Card>
                         </>
                     ) : <Skeleton height={100} />}
                 </GridItem>
@@ -271,7 +276,7 @@ const Shop = (props) => {
                             <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Валюта</Text>
                             <Select onChange={onCurrencyChange}>
                                 {[
-                                    {label: 'Доллар ($)', value: '$'},
+                                    {label: 'Доллар США ($)', value: '$'},
                                     {label: 'Российский рубль (₽)', value: '₽'},
                                     {label: 'Украинская гривна (₴)', value: '₴'},
                                 ].map(curr => currency === curr.value ? (

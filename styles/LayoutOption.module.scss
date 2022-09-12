@@ -18,6 +18,10 @@
     display: flex;
     align-items: center;
     gap: .5rem;
+
+    &.option__header_filter {
+      justify-content: space-between;
+    }
   }
 
   &__title {

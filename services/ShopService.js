@@ -324,6 +324,20 @@ export default class ShopService {
         }
     }
 
+    static async toggleFilter(shop_id, id, bool) {
+        try {
+            await $api.get($apiRoutes.shops.filters.toggle(shop_id, id, bool))
+            return {
+                ok: true,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
     static async delete(id) {
         try {
             await $api.delete($apiRoutes.shops.delete(id))
@@ -520,6 +534,12 @@ export default class ShopService {
 
     static async requestLayoutOptions(id) {
         const response = await $api.get($apiRoutes.shops.layoutOptions.list(id));
+
+        return response.data.data;
+    }
+
+    static async requestFilters(id) {
+        const response = await $api.get($apiRoutes.shops.filters.list(id));
 
         return response.data.data;
     }

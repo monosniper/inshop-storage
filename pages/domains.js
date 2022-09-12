@@ -10,6 +10,7 @@ import {observer} from "mobx-react-lite";
 import store from "../store/store";
 import Link from "next/link";
 import {$routes} from "../http/routes";
+import AddDomain from "../components/AddDomain";
 
 const Domains = () => {
     const data = useMemo(() => store.domains, [store.domains])
@@ -91,6 +92,8 @@ const Domains = () => {
                 deleteMany={(ids) => store.deleteDomains(ids)}
                 requestItems={() => store.requestDomains()}
             />
+
+            <AddDomain />
         </>
     );
 };

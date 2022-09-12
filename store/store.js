@@ -106,6 +106,7 @@ class Store {
             shop.setDomain(data.domain);
             shop.setReviews(data.reviews);
             shop.setOrders(data.orders);
+            shop.setFilters(data.filters);
         }
 
         return data;
@@ -146,6 +147,10 @@ class Store {
         }
 
         return rs;
+    }
+
+    async addDomain(data) {
+        return await UserService.addDomain({user_id: this.user.data.id, ...data})
     }
 }
 

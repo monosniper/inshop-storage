@@ -20,6 +20,7 @@ class Shop {
     customPages = []
     reviews = []
     orders = []
+    filters = []
 
     constructor() {
         makeAutoObservable(this)
@@ -32,6 +33,10 @@ class Shop {
 
     setOptions(options) {
         this.options = options;
+    }
+
+    setFilters(filters) {
+        this.filters = filters;
     }
 
     setOrders(orders) {
@@ -89,7 +94,7 @@ class Shop {
     async requestData() {
         const data = await ShopService.requestShop();
 
-        if(data) {
+        if (data) {
             this.setCategories(data.categories);
             this.setOptions(data.options);
             this.setLayoutOptions(data.layout);
@@ -124,6 +129,14 @@ class Shop {
         return rs;
     }
 
+    async requestFilters() {
+        const rs = await ShopService.requestFilters(this.id);
+
+        this.setFilters(rs)
+
+        return rs;
+    }
+
     async makeOrder(shipping_data, products) {
         const response = await ShopService.makeOrder(shipping_data, products)
 
@@ -131,7 +144,7 @@ class Shop {
     }
 
     getProduct(id) {
-        return this.products.find(product => product.id+'' === id+'')
+        return this.products.find(product => product.id + '' === id + '')
     }
 
     async createProduct(data) {
@@ -164,7 +177,7 @@ class Shop {
 
     async requestModules() {
         const rs = await ShopService.getModules(this.id)
-        if(rs.data) {
+        if (rs.data) {
             this.setModules(rs.data)
         }
         return rs;
@@ -172,7 +185,7 @@ class Shop {
 
     async requestBanners() {
         const rs = await ShopService.getBanners(this.id)
-        if(rs.data) {
+        if (rs.data) {
             this.setBanners(rs.data)
         }
         return rs;
@@ -180,7 +193,7 @@ class Shop {
 
     async requestClients() {
         const rs = await ShopService.getClients(this.id)
-        if(rs.data) {
+        if (rs.data) {
             this.setClients(rs.data)
         }
         return rs;
@@ -188,7 +201,7 @@ class Shop {
 
     async requestColors() {
         const rs = await ShopService.getColors(this.id)
-        if(rs.data) {
+        if (rs.data) {
             this.setColors(rs.data)
         }
         return rs;
@@ -196,7 +209,7 @@ class Shop {
 
     async requestCategories() {
         const rs = await ShopService.getCategories(this.id)
-        if(rs.data) {
+        if (rs.data) {
             this.setCategories(rs.data)
         }
         return rs;
@@ -204,7 +217,7 @@ class Shop {
 
     async requestOrders() {
         const rs = await ShopService.getOrders(this.id)
-        if(rs.data) {
+        if (rs.data) {
             this.setOrders(rs.data)
         }
         return rs;
@@ -212,7 +225,7 @@ class Shop {
 
     async requestReviews() {
         const rs = await ShopService.getReviews(this.id)
-        if(rs.data) {
+        if (rs.data) {
             this.setReviews(rs.data)
         }
         return rs;
@@ -297,12 +310,16 @@ class Shop {
         return await ShopService.toggleLayout(this.id, id, bool)
     }
 
+    async toggleFilter(id, bool) {
+        return await ShopService.toggleFilter(this.id, id, bool)
+    }
+
     async saveColor(id, value) {
         return await ShopService.saveColor(this.id, id, value)
     }
 
     getCustomPage(id) {
-        return this.customPages.find(page => page.id+'' === id)
+        return this.customPages.find(page => page.id + '' === id)
     }
 
     async createCustomPage(data) {

@@ -113,4 +113,20 @@ export default class UserService {
 
         return response.data;
     }
+
+    static async addDomain(data) {
+        try {
+            const rs = await $api.post($apiRoutes.domains.create, data)
+
+            return {
+                ok: true,
+                data: rs.data.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
 }

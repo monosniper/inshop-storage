@@ -40,6 +40,7 @@ export const $apiRoutes = {
     },
     domains: {
         list: 'user/domains',
+        create: 'domains',
         delete: (id) => `domains/${id}`,
         deleteMany: `domains/deleteMany`,
     },
@@ -121,6 +122,10 @@ export const $apiRoutes = {
         layoutOptions: {
             list: (id) => `/shops/${id}/layoutOptions`,
             toggle: (shop_id, id, bool) => `/shops/${shop_id}/layoutOptions/${id}/${bool ? 'activate' : 'deactivate'}`,
+        },
+        filters: {
+            list: (id) => `/shops/${id}/filters`,
+            toggle: (shop_id, id, bool) => `/shops/${shop_id}/filters/${id}/${bool ? 'activate' : 'deactivate'}`,
         },
         create: 'shops',
         update: (id) => `shops/${id}`,
