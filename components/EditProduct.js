@@ -30,7 +30,6 @@ import ImageInput from "./ImageInput";
 import CategorySelect from "./CategorySelect";
 
 const EditProduct = (props) => {
-    console.log(props.discount || 0)
     const [isOpen, setIsOpen] = useState(false)
     const [title, setTitle] = useState(props.title)
     const [subtitle, setSubtitle] = useState(props.subtitle)
@@ -177,7 +176,6 @@ const EditProduct = (props) => {
                                     onChange={handleDescriptionChange}
                                     placeholder='Описание...'
                                     size='sm'
-                                    value={description}
                                 />
                             </Box>
                             <Box>
