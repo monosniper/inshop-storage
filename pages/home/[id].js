@@ -61,6 +61,7 @@ const Shop = (props) => {
     const [qiwiTheme, setQiwiTheme] = useState('');
     const [qiwiPay, setQiwiPay] = useState(false);
     const [currency, setCurrency] = useState('$');
+    const [delivery, setDelivery] = useState(0);
     const modules = useModules()
 
     const layoutOptions = useMemo(() => generateLayoutOptions(), [shop.layoutOptions]);
@@ -70,7 +71,6 @@ const Shop = (props) => {
 
     useEffect(() => {
         if(data) {
-            console.log(data, data.domain_id)
             setStartTitle(data.options.title)
             setTitle(data.options.title)
             setSlogan(data.options.slogan)
@@ -80,6 +80,7 @@ const Shop = (props) => {
             setQiwiPublicKey(data.options.qiwiPublicKey)
             setQiwiTheme(data.options.qiwiTheme)
             setCurrency(data.options.currency)
+            setDelivery(data.options.delivery)
         }
     }, [data])
 
@@ -93,6 +94,7 @@ const Shop = (props) => {
     const onQiwiThemeChange = (e) => setQiwiTheme(e.target.value)
     const onCurrencyChange = (e) => setCurrency(e.target.value)
     const handleQiwiPayChange = (e) => setQiwiPay(e.target.checked)
+    const handleDeliveryChange = (e) => setDelivery(e.target.value)
 
     const handleSave = () => {
         shop.update({
@@ -111,6 +113,7 @@ const Shop = (props) => {
             qiwiPublicKey,
             qiwiTheme,
             currency,
+            delivery,
         }).then(() => showMessage('Изменения сохранены'))
     }
 
@@ -285,6 +288,10 @@ const Shop = (props) => {
                                     <option value={curr.value}>{curr.label}</option>
                                 ))}
                             </Select>
+                        </div>
+                        <div className={styles.row}>
+                            <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Стоимость доставки</Text>
+                            <Input onChange={handleDeliveryChange} type={'number'} placeholder='Стоимость доставки' min={0} value={delivery}/>
                         </div>
                         {modules.get($modules.payment.qiwi) ? <>
                                 <div className={styles.switch__text}>Оплата по киви</div>

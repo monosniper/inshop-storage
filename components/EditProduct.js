@@ -17,7 +17,7 @@ import {
     Select,
     SimpleGrid,
     Stack,
-    Text, useToast
+    Text, Textarea, useToast
 } from "@chakra-ui/react";
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 import "filepond/dist/filepond.min.css";
@@ -38,6 +38,7 @@ const EditProduct = (props) => {
     const [inStock, setInStock] = useState(props.inStock)
     const [category, setCategory] = useState(props.category_id)
     const [discount, setDiscount] = useState(props.discount || 0)
+    const [description, setDescription] = useState(props.description || '')
     const [uuid, setUuid] = useState(props.uuid);
     const categories = useMemo(() => shop.categories, [shop.categories])
     const {id} = props
@@ -53,11 +54,13 @@ const EditProduct = (props) => {
     const handleInStockChange = e => setInStock(e)
     const handleCategoryChange = e => setCategory(e.target.value)
     const handleDiscountChange = e => setDiscount(e)
+    const handleDescriptionChange = e => setDescription(e.target.value)
 
     const handleSubmit = () => {
         shop.updateProduct(id, {
             title,
             subtitle,
+            description,
             price,
             inStock,
             category_id: category,
@@ -79,7 +82,13 @@ const EditProduct = (props) => {
         <>
             <Button mx={1} onClick={handleOpen} colorScheme={'green'}><FaEdit /></Button>
 
-            <Modal onClose={handleClose} closeOnOverlayClick={false} isOpen={isOpen} isCentered>
+            <Modal
+                onClose={handleClose}
+                closeOnOverlayClick={false}
+                isOpen={isOpen}
+                isCentered
+                scrollBehavior={'inside'}
+            >
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader>Редактировать</ModalHeader>
@@ -161,6 +170,16 @@ const EditProduct = (props) => {
                                 categories={categories}
                                 handleCategoryChange={handleCategoryChange}
                             />}
+                            <Box>
+                                <Text mb='8px'>Описание</Text>
+                                <Textarea
+                                    value={description}
+                                    onChange={handleDescriptionChange}
+                                    placeholder='Описание...'
+                                    size='sm'
+                                    value={description}
+                                />
+                            </Box>
                             <Box>
                                 <ImageInput
                                     uuid={uuid}
