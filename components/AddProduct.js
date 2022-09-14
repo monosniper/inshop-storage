@@ -53,6 +53,7 @@ const AddProduct = () => {
     const [category, setCategory] = useState('')
     const [description, setDescription] = useState('')
     const [discount, setDiscount] = useState(0)
+    const [order, setOrder] = useState(0)
     const [properties, setProperties] = useState([])
     const [files, setFiles] = useState([])
     const categories  = useMemo(() => shop.categories, [shop.categories])
@@ -68,12 +69,19 @@ const AddProduct = () => {
     const handleCategoryChange = e => setCategory(e.target.value)
     const handleDescriptionChange = e => setDescription(e.target.value)
     const handleDiscountChange = e => setDiscount(e)
+    const handleOrderChange = e => setOrder(e)
+
+    useEffect(() => {
+        if(categories && categories.length) setCategory(categories[0].id)
+    }, [categories])
 
     const validationError = (type) => {
         const errors = {
             'title': 'Название обязательно к заполнению.',
             'price': 'Цена обязательна к заполнению.',
             'category': 'Выберите категорию.',
+            'order.min': 'Порядок не может быть меньше нуля.',
+            'inStock.min': 'Кол-во товара не может быть меньше нуля.',
         }
 
         new Noty({
@@ -90,6 +98,7 @@ const AddProduct = () => {
         setCategory('')
         setDescription('')
         setDiscount('')
+        setOrder(0)
         setUuid(uuidv4())
         setFiles([])
     }
@@ -103,6 +112,10 @@ const AddProduct = () => {
             validationError('price')
         } else if(category.trim() === '') {
             validationError('category')
+        } else if(order < 0) {
+            validationError('order.min')
+        } else if(inStock < 0) {
+            validationError('inStock.min')
         } else {
             shop.createProduct({
                 title,
@@ -110,6 +123,7 @@ const AddProduct = () => {
                 price,
                 inStock,
                 discount,
+                order,
                 category_id: category,
                 description,
                 uuid,
@@ -149,7 +163,7 @@ const AddProduct = () => {
                 <HiPlus/>
             </div>
 
-            <Modal onClose={handleClose} closeOnOverlayClick={false} isOpen={isOpen} isCentered>
+            <Modal scrollBehavior={'inside'} onClose={handleClose} closeOnOverlayClick={false} isOpen={isOpen} isCentered>
                 <ModalOverlay/>
                 <ModalContent>
                     <ModalHeader>Добавить позицию</ModalHeader>
@@ -241,6 +255,20 @@ const AddProduct = () => {
                                 categories={categories}
                                 handleCategoryChange={handleCategoryChange}
                             />}
+                            <Box>
+                                <Text mb='8px'>Приоритет</Text>
+                                <NumberInput
+                                    size='sm'
+                                    value={order}
+                                    onChange={handleOrderChange}
+                                >
+                                    <NumberInputField />
+                                    <NumberInputStepper>
+                                        <NumberIncrementStepper />
+                                        <NumberDecrementStepper />
+                                    </NumberInputStepper>
+                                </NumberInput>
+                            </Box>
                             <Box>
                                 <Text mb='8px'>Описание</Text>
                                 <Textarea

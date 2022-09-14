@@ -28,6 +28,7 @@ import shop from "../store/shop";
 import {observer} from "mobx-react-lite";
 import ImageInput from "./ImageInput";
 import CategorySelect from "./CategorySelect";
+import Noty from "noty";
 
 const EditProduct = (props) => {
     const [isOpen, setIsOpen] = useState(false)
@@ -36,6 +37,7 @@ const EditProduct = (props) => {
     const [price, setPrice] = useState(props.price)
     const [inStock, setInStock] = useState(props.inStock)
     const [category, setCategory] = useState(props.category_id)
+    const [order, setOrder] = useState(props.order || 0)
     const [discount, setDiscount] = useState(props.discount || 0)
     const [description, setDescription] = useState(props.description || '')
     const [uuid, setUuid] = useState(props.uuid);
@@ -54,27 +56,56 @@ const EditProduct = (props) => {
     const handleCategoryChange = e => setCategory(e.target.value)
     const handleDiscountChange = e => setDiscount(e)
     const handleDescriptionChange = e => setDescription(e.target.value)
+    const handleOrderChange = e => setOrder(e)
+
+    const validationError = (type) => {
+        const errors = {
+            'title': 'Название обязательно к заполнению.',
+            'price': 'Цена обязательна к заполнению.',
+            'category': 'Выберите категорию.',
+            'order.min': 'Порядок не может быть меньше нуля.',
+            'inStock.min': 'Кол-во товара не может быть меньше нуля.',
+        }
+
+        new Noty({
+            type: 'error',
+            text: errors[type],
+        }).show()
+    }
 
     const handleSubmit = () => {
-        shop.updateProduct(id, {
-            title,
-            subtitle,
-            description,
-            price,
-            inStock,
-            category_id: category,
-            discount,
-        }).then(() => {
-            shop.requestProducts()
-            toast({
-                title: 'Изменения сохранены',
-                description: '',
-                status: 'success',
-                duration: 9000,
-                isClosable: true,
+        if(title.trim() === '') {
+            validationError('title')
+        } else if(price === '') {
+            validationError('price')
+        } else if(category === '') {
+            validationError('category')
+        } else if(order < 0) {
+            validationError('order.min')
+        } else if(inStock < 0) {
+            validationError('inStock.min')
+        } else {
+            shop.updateProduct(id, {
+                title,
+                subtitle,
+                description,
+                price,
+                inStock,
+                order,
+                category_id: category,
+                discount,
+            }).then(() => {
+                shop.requestProducts()
+                toast({
+                    title: 'Изменения сохранены',
+                    description: '',
+                    status: 'success',
+                    duration: 9000,
+                    isClosable: true,
+                })
+                setIsOpen(false)
             })
-            setIsOpen(false)
-        })
+        }
     }
 
     return (
@@ -169,6 +200,20 @@ const EditProduct = (props) => {
                                 categories={categories}
                                 handleCategoryChange={handleCategoryChange}
                             />}
+                            <Box>
+                                <Text mb='8px'>Приоритет</Text>
+                                <NumberInput
+                                    size='sm'
+                                    value={order}
+                                    onChange={handleOrderChange}
+                                >
+                                    <NumberInputField />
+                                    <NumberInputStepper>
+                                        <NumberIncrementStepper />
+                                        <NumberDecrementStepper />
+                                    </NumberInputStepper>
+                                </NumberInput>
+                            </Box>
                             <Box>
                                 <Text mb='8px'>Описание</Text>
                                 <Textarea
