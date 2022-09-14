@@ -179,6 +179,9 @@ const Banners = () => {
 
     const handle_typeChange = (e) => {
         shop.saveBanner({type: e.target.value}, ids[currentBanner]).then(() => {
+            shop.getBannerTypes().then((rs) => {
+                setTypes(rs.data)
+            })
             shop.requestBanners()
         })
     }
