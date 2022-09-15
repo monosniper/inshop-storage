@@ -123,7 +123,7 @@ const AddProduct = () => {
                 price,
                 inStock,
                 discount,
-                order,
+                priority: order,
                 category_id: category,
                 description,
                 uuid,

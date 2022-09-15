@@ -37,7 +37,7 @@ const EditProduct = (props) => {
     const [price, setPrice] = useState(props.price)
     const [inStock, setInStock] = useState(props.inStock)
     const [category, setCategory] = useState(props.category_id)
-    const [order, setOrder] = useState(props.order || 0)
+    const [order, setOrder] = useState(props.priority || 0)
     const [discount, setDiscount] = useState(props.discount || 0)
     const [description, setDescription] = useState(props.description || '')
     const [uuid, setUuid] = useState(props.uuid);
@@ -91,7 +91,7 @@ const EditProduct = (props) => {
                 description,
                 price,
                 inStock,
-                order,
+                priority: order,
                 category_id: category,
                 discount,
             }).then(() => {
