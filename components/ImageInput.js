@@ -24,7 +24,9 @@ const ImageInput = ({ uuid, images=[], multiple=false, prefix=false }) => {
 
     const server = {
         url: API_URL,
-        process: 'files/upload/' + uuid + '/images' + (prefix ? ('-' + prefix) : '') + '/true/',
+        process: 'files/upload/' + uuid + '/images' + (prefix ? ('-' + prefix) : '')
+            // + '/true/'
+        ,
         // process: {
         //     url: 'files/upload/' + uuid + '/images' + (prefix ? ('.' + prefix) : '') + '/true',
         //     method: "POST",
