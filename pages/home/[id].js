@@ -203,25 +203,17 @@ const Shop = (props) => {
                                 </div>
                                 <div className={styles.row}>
                                     <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Язык</Text>
-                                    <Select onChange={onLanguageChange}>
+                                    <Select defaultValue={language} onChange={onLanguageChange}>
                                         {[
                                             {label: 'Русский', value: 'ru'},
                                             {label: 'Английский', value: 'en'},
-                                        ].map(lang => language === lang.value ? (
-                                            <option value={lang.value} selected>{lang.label}</option>
-                                        ) : (
-                                            <option value={lang.value}>{lang.label}</option>
-                                        ))}
+                                        ].map(lang => <option value={lang.value}>{lang.label}</option>)}
                                     </Select>
                                 </div>
                                 <div className={styles.row}>
                                     <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Домен</Text>
-                                    <Select onChange={onDomainIdChange} placeholder={'Выберите домен'}>
-                                        {domains.map(domain => {
-                                            console.log(domain_id, domain.id)
-                                            if(domain.id === domain_id) return <option selected value={domain.id}>{domain.fullname}</option>
-                                            else return <option value={domain.id}>{domain.fullname}</option>
-                                        })}
+                                    <Select defaultValue={domain_id} onChange={onDomainIdChange} placeholder={'Выберите домен'}>
+                                        {domains.map(domain => <option value={domain.id}>{domain.fullname}</option>)}
                                     </Select>
                                 </div>
 
@@ -277,16 +269,12 @@ const Shop = (props) => {
                     >
                         <div className={styles.row}>
                             <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Валюта</Text>
-                            <Select onChange={onCurrencyChange}>
+                            <Select defaultValue={currency} onChange={onCurrencyChange}>
                                 {[
                                     {label: 'Доллар США ($)', value: '$'},
                                     {label: 'Российский рубль (₽)', value: '₽'},
                                     {label: 'Украинская гривна (₴)', value: '₴'},
-                                ].map(curr => currency === curr.value ? (
-                                    <option value={curr.value} selected>{curr.label}</option>
-                                ) : (
-                                    <option value={curr.value}>{curr.label}</option>
-                                ))}
+                                ].map(curr => <option value={curr.value}>{curr.label}</option>)}
                             </Select>
                         </div>
                         <div className={styles.row}>

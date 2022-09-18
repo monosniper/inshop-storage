@@ -28,7 +28,7 @@ function ToolBox({ banners_count, onChange, current }) {
     const buttons = [];
 
     for (let i=0;i<banners_count;i++) {
-        buttons.push(<Button colorScheme={current === (i + 1) ? 'facebook' : 'gray'} onClick={() => onChange(i+1)}>Баннер #{i+1}</Button>);
+        buttons.push(<Button key={'toolbox-button-'+i} colorScheme={current === (i + 1) ? 'facebook' : 'gray'} onClick={() => onChange(i+1)}>Баннер #{i+1}</Button>);
     }
 
     return <HStack spacing={2}>
@@ -87,7 +87,8 @@ const Banners = () => {
     const [button_colors, setButtonColors] = useState(banners.map(banner => banner.button_color))
     const _types = useMemo(() => getArrayFromBanner('type'), [shop.banners])
     const uuids = useMemo(() => getArrayFromBanner('uuid'), [shop.banners])
-    const image_names = useMemo(() => getArrayFromBanner('image_name'), [shop.banners])
+    const desktop_image_name = useMemo(() => getArrayFromBanner('desktop_image_name'), [shop.banners])
+    const mobile_image_name = useMemo(() => getArrayFromBanner('mobile_image_name'), [shop.banners])
     const [uuid, setUuid] = useState(uuids ? uuids[currentBanner-1] : null);
     // const files = useMemo(() => getFilesFromBanner(), [home.banners])
     const [isLoadings, setIsLoadings] = useState([false,false,false])
@@ -247,11 +248,8 @@ const Banners = () => {
                             <>
                                 <div className={styles.row}>
                                     <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Тип баннера</Text>
-                                    <Select onChange={handle_typeChange}>
-                                        {types.map((type, i) => _types[currentBanner-1] === type
-                                            ? <option selected key={'type-'+i} value={type}>{lang[type]}</option>
-                                            : <option key={'type-'+i} value={type}>{lang[type]}</option>
-                                        )}
+                                    <Select defaultValue={_types[currentBanner-1]} onChange={handle_typeChange}>
+                                        {types.map((type, i) => <option key={'type-'+i} value={type}>{lang[type]}</option>)}
                                     </Select>
                                 </div>
                                 {
@@ -315,13 +313,26 @@ const Banners = () => {
 
                                 {
                                     containsType('image')
-                                        ? <div className={styles.row}>
-                                            <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Картинка <small>(Рекомендуемый размер: 300 пикселей в высоту)</small></Text>
-                                            <ImageInput
-                                                images={[image_names[currentBanner-1]]}
-                                                uuid={uuids[currentBanner-1]}
-                                            />
-                                        </div>
+                                        ? <>
+                                            <div className={styles.row}>
+                                                <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Картинка <small>(Рекомендуемый размер: 300 пикселей в высоту)</small></Text>
+                                                <ImageInput
+                                                    images={[desktop_image_name[currentBanner-1]]}
+                                                    uuid={uuids[currentBanner-1]}
+                                                    prefix={'desktop'}
+                                                />
+                                            </div>
+                                            <div className={styles.row}>
+                                                <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Картинка для маленьких экранов
+                                                    {/*<small>(Рекомендуемый размер: 300 пикселей в высоту)</small>*/}
+                                                </Text>
+                                                <ImageInput
+                                                    images={[mobile_image_name[currentBanner-1]]}
+                                                    uuid={uuids[currentBanner-1]}
+                                                    prefix={'mobile'}
+                                                />
+                                            </div>
+                                        </>
                                         : null
                                 }
 
