@@ -24,7 +24,7 @@ const ImageInput = ({ uuid, images=[], multiple=false, prefix=false }) => {
 
     const server = {
         url: API_URL,
-        process: 'files/upload/' + uuid + '/images' + (prefix ? ('.' + prefix) : '') + '/true/',
+        process: 'files/upload/' + uuid + '/images' + (prefix ? ('-' + prefix) : '') + '/true/',
         // process: {
         //     url: 'files/upload/' + uuid + '/images' + (prefix ? ('.' + prefix) : '') + '/true',
         //     method: "POST",
@@ -40,7 +40,7 @@ const ImageInput = ({ uuid, images=[], multiple=false, prefix=false }) => {
         //     },
         //     timeout: 7000,
         // },
-        load: 'files/get/' + uuid + '/images' + (prefix ? '.' + prefix : '') + '/',
+        load: 'files/get/' + uuid + '/images' + (prefix ? '-' + prefix : '') + '/',
         remove: {
             url: 'files/delete/',
             method: 'POST'
