@@ -207,13 +207,13 @@ const Shop = (props) => {
                                         {[
                                             {label: 'Русский', value: 'ru'},
                                             {label: 'Английский', value: 'en'},
-                                        ].map(lang => <option value={lang.value}>{lang.label}</option>)}
+                                        ].map((lang,i) => <option key={'lang-'+i} value={lang.value}>{lang.label}</option>)}
                                     </Select>
                                 </div>
                                 <div className={styles.row}>
                                     <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Домен</Text>
                                     <Select defaultValue={domain_id} onChange={onDomainIdChange} placeholder={'Выберите домен'}>
-                                        {domains.map(domain => <option value={domain.id}>{domain.fullname}</option>)}
+                                        {domains.map((domain, i) => <option key={'domain-'+i} value={domain.id}>{domain.fullname}</option>)}
                                     </Select>
                                 </div>
 
@@ -274,7 +274,7 @@ const Shop = (props) => {
                                     {label: 'Доллар США ($)', value: '$'},
                                     {label: 'Российский рубль (₽)', value: '₽'},
                                     {label: 'Украинская гривна (₴)', value: '₴'},
-                                ].map(curr => <option value={curr.value}>{curr.label}</option>)}
+                                ].map((curr, i) => <option key={'curr-'+i} value={curr.value}>{curr.label}</option>)}
                             </Select>
                         </div>
                         <div className={styles.row}>
