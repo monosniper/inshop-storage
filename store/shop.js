@@ -322,6 +322,10 @@ class Shop {
         return this.customPages.find(page => page.id + '' === id)
     }
 
+    getBanner(id) {
+        return this.banners.find(banner => banner.id + '' === id)
+    }
+
     async createCustomPage(data) {
         return await ShopService.createCustomPage(this.id, data)
     }

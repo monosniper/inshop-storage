@@ -19,32 +19,31 @@ import Link from "next/link";
 import {$routes} from "../../http/routes";
 
 const CustomPages = () => {
-    const customPages = useMemo(() => shop.customPages, [shop.customPages]);
+    const banners = useMemo(() => shop.banners, [shop.banners]);
 
     useEffect(() => {
         if(shop.id) {
-            shop.requestCustomPages()
+            shop.requestBanners()
         }
     }, [shop.id])
 
     return (
         <div>
             <Head>
-                <title>Дополнительные страницы - {process.env.NEXT_PUBLIC_APP_NAME}</title>
+                <title>Баннеры - {process.env.NEXT_PUBLIC_APP_NAME}</title>
                 <meta name="description" content='{ props.description }'/>
             </Head>
 
             <Card
-                title={'Дополнительные страницы'}
+                title={'Баннеры'}
             >
                 <div className={styles.pages}>
-                    {customPages.map((page, i) => <Link key={'link-'+i} href={$routes.custom_pages.page(page.id)}>
+                    {banners.map((banner, i) => <Link key={'link-'+i} href={$routes.banners.page(banner.id)}>
                         <div className={styles.page} key={'page-'+i}>
-                            <div className={styles.page__title}>{page.title}</div>
-                            <div className={styles.page__slug}>/{page.slug}</div>
+                            <div className={styles.page__title}>Баннер #{banner.priority}</div>
                         </div>
                     </Link>)}
-                    {customPages.length >= 3 ? null : <Link href={$routes.custom_pages.create}><div className={styles.page}>Добавить страницу</div></Link>}
+                    {banners.length >= 3 ? null : <Link href={$routes.banners.create}><div className={styles.page}>Добавить баннер</div></Link>}
                 </div>
             </Card>
         </div>

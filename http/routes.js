@@ -1,11 +1,15 @@
 export const $routes = {
     index: '/home',
     login: '/login',
-    banners: '/banners',
     custom_pages: {
         index: '/custom_pages',
         create: '/custom_pages/create',
         page: (id) => `/custom_pages/${id}`,
+    },
+    banners: {
+        index: '/banners',
+        create: '/banners/create',
+        page: (id) => `/banners/${id}`,
     },
     no_shop: '/no_shop',
     categories: '/categories',

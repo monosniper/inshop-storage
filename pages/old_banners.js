@@ -23,6 +23,7 @@ import {observer} from "mobx-react-lite";
 import {$routes} from "../http/routes";
 import {toJS} from "mobx";
 import ImageInput from "../components/ImageInput";
+import $lang from "../utils/lang";
 
 function ToolBox({ banners_count, onChange, current }) {
     const buttons = [];
@@ -36,7 +37,7 @@ function ToolBox({ banners_count, onChange, current }) {
     </HStack>;
 }
 
-const Banners = () => {
+const Old_banners = () => {
     const getArrayFromBanner = (name) => {
         return [1,2,3].map(i => shop.banners.find(banner => banner.order === i)
             ? shop.banners.find(banner => banner.order === i)[name]
@@ -94,14 +95,6 @@ const Banners = () => {
     const [isLoadings, setIsLoadings] = useState([false,false,false])
     const { isOpen, onOpen, onClose } = useDisclosure()
     const toast = useToast()
-
-    const lang = {
-        text: 'Простой текст',
-        text_button: 'Текст с кнопкой',
-        text_button_image: 'текст с кнопкой и картинкой',
-        text_image: 'Текст с картинкой',
-        image: 'Картинка',
-    }
 
     // registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
 
@@ -220,7 +213,6 @@ const Banners = () => {
     }
 
     const handleDelete = () => {
-        console.log(currentBanner, ids)
         shop.deleteBanner(ids[currentBanner]).then(() => {
             shop.requestBanners()
             onClose()
@@ -249,7 +241,7 @@ const Banners = () => {
                                 <div className={styles.row}>
                                     <Text sx={{marginBottom: '.3rem'}} fontSize='md'>Тип баннера</Text>
                                     <Select defaultValue={_types[currentBanner-1]} onChange={handle_typeChange}>
-                                        {types.map((type, i) => <option key={'type-'+i} value={type}>{lang[type]}</option>)}
+                                        {types.map((type, i) => <option key={'type-'+i} value={type}>{$lang[type]}</option>)}
                                     </Select>
                                 </div>
                                 {
@@ -364,4 +356,4 @@ const Banners = () => {
     );
 };
 
-export default observer(Banners);
+export default observer(Old_banners);

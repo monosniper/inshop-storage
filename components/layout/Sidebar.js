@@ -51,7 +51,7 @@ const Sidebar = () => {
             {modules.get($modules.auth) ? <SidebarItem icon={<Icon as={FiUsers} w={6} h={6} />} href={$routes.users}>Клиенты</SidebarItem> : null}
             <SidebarItem icon={<Icon as={BiCategoryAlt} w={6} h={6} />} href={$routes.categories}>Категории</SidebarItem>
             <SidebarItem icon={<Icon as={BiPlug} w={6} h={6} />} href={$routes.modules}>Модули</SidebarItem>
-            {modules.get($modules.banner) ? <SidebarItem icon={<Icon as={MdOutlineViewCarousel} w={6} h={6} />} href={$routes.banners}>Баннеры</SidebarItem> : null}
+            {modules.get($modules.banner) ? <SidebarItem icon={<Icon as={MdOutlineViewCarousel} w={6} h={6} />} href={$routes.banners.index}>Баннеры</SidebarItem> : null}
             {modules.get($modules.custom_pages) ? <SidebarItem icon={<Icon as={RiPagesLine} w={6} h={6} />} href={$routes.custom_pages.index}>Доп. страницы</SidebarItem> : null}
             {modules.get($modules.reviews) ? <SidebarItem icon={<Icon as={MdReviews} w={6} h={6} />} href={$routes.reviews}>Отзывы</SidebarItem> : null}
             {/*{home.id  && <SidebarItem icon={<Icon as={IoConstructOutline} w={6} h={6} />} href={$externalRoutes.constructor(home.id)} externalLink>Конструктор</SidebarItem>}*/}
