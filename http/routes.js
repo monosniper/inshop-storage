@@ -19,6 +19,7 @@ export const $routes = {
     users: '/users',
     reviews: '/reviews',
     shop: (id) => `/home/${id}`,
+    convertation: (id) => `/convert/${id}`,
     undefined: '/undefined',
     profile: '/profile',
     domains: '/domains',

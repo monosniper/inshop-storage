@@ -1,6 +1,6 @@
 import React, {useMemo} from 'react';
 import styles from "../styles/Shops.module.scss";
-import {Button, Switch} from "@chakra-ui/react";
+import {Button, HStack, Stack, Switch} from "@chakra-ui/react";
 import GetButton from "./GetButton";
 import Link from "next/link";
 import ShopImg from '../public/assets/img/shop.png';
@@ -10,26 +10,25 @@ import 'moment-timezone';
 import 'moment/locale/ru';
 import {$routes} from "../http/routes";
 import {FaExternalLinkAlt} from "react-icons/fa";
+import {MdOutlineMobileScreenShare} from "react-icons/md";
 
 const Shop = ({ shop }) => {
-    const { title, slogan } = useMemo(() => shop.options.slogan ? shop.options : {title:'',slogan:''}, [shop.options]);
-
     return (
         <div className={styles.shop}>
             <div className={styles.shop__header}>
                 <div className={styles.shop__left}>
                     <div className={styles.shop__logo}>
-                        <img src={shop.logo_url} alt={title} width={60} height={60}/>
+                        <img src={shop.logo_url} alt={shop.options.title} width={60} height={60}/>
                         {/*<Image src={shop.logo_url} width={60} height={60} />*/}
                     </div>
-                    <div className={styles.shop__title}>{title}</div>
+                    <div className={styles.shop__title}>{shop.options.title}</div>
                 </div>
                 <a rel={'noreferrer'} target={'_blank'} href={'https://'+shop.domain}>
                     <FaExternalLinkAlt />
                 </a>
             </div>
             <div className={styles.shop__descriprion}>
-                {slogan.length > 100 ? slogan.substring(0, 100) + '...' : slogan}
+                {shop.options.slogan.length > 100 ? shop.options.slogan.substring(0, 100) + '...' : shop.options.slogan}
             </div>
             <div className={styles.shop__footer}>
                 <div className={styles.shop__date}>
@@ -43,11 +42,14 @@ const Shop = ({ shop }) => {
                         />
                     ) : null}
                 </div>
-                <div className={styles.shop__btn}>
-                    <Link href={$routes.shop(shop.id)}>
-                        <Button>Настройки</Button>
+                <HStack spacing={2} className={styles.shop__btn}>
+                    <Link href={$routes.convertation(shop.id)}>
+                        <Button size={'sm'}><MdOutlineMobileScreenShare /></Button>
                     </Link>
-                </div>
+                    <Link href={$routes.shop(shop.id)}>
+                        <Button size={'sm'}>Настройки</Button>
+                    </Link>
+                </HStack>
             </div>
         </div>
     );
