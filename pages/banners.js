@@ -183,7 +183,7 @@ const Banners = () => {
             shop.getBannerTypes().then((rs) => {
                 setTypes(rs.data)
             })
-            shop.requestBanners()
+            // shop.requestBanners()
         })
     }
 
