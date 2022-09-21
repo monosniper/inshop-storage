@@ -39,7 +39,7 @@ const Products = () => {
         },
         {
             Header: 'Категория',
-            accessor: 'category_id',
+            accessor: 'category',
         },
         {
             Header: 'В наличии',
@@ -67,11 +67,12 @@ const Products = () => {
         },
         {
             title: 'Категория',
-            accessor: 'category_id',
-            type: 'select',
-            options: shop.categories ? shop.categories.map(cat => {
-                return {value: cat.id, text: cat.title}
-            }) : []
+            accessor: 'category',
+            type: 'search',
+            // options: shop.categories ? shop.categories.map(cat => {
+            //     return {value: cat.id, text: cat.title}
+            // }) : []
+            value: ''
         },
         {
             title: 'Поиск',
