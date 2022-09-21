@@ -27,9 +27,9 @@ const Shop = ({ shop }) => {
                     <FaExternalLinkAlt />
                 </a>
             </div>
-            <div className={styles.shop__descriprion}>
+            {shop.options.slogan ? <div className={styles.shop__descriprion}>
                 {shop.options.slogan.length > 100 ? shop.options.slogan.substring(0, 100) + '...' : shop.options.slogan}
-            </div>
+            </div> : null}
             <div className={styles.shop__footer}>
                 <div className={styles.shop__date}>
                     {shop.last_update ? (
