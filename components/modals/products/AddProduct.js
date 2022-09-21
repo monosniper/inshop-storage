@@ -1,9 +1,9 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import styles from '../styles/AddProduct.module.scss'
+import styles from '../../../styles/AddProduct.module.scss'
 import {HiPlus} from "react-icons/hi";
 import {
     Box,
-    Button,
+    Button, HStack,
     Input,
     Modal,
     ModalBody,
@@ -18,7 +18,7 @@ import {
     NumberInputStepper,
     Select,
     SimpleGrid,
-    Stack,
+    Stack, Tag, TagLabel,
     Text, Textarea, useToast
 } from "@chakra-ui/react";
 import {FilePond, registerPlugin} from "react-filepond";
@@ -26,14 +26,42 @@ import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orien
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 import "filepond/dist/filepond.min.css";
-import shop from "../store/shop";
+import shop from "../../../store/shop";
 import Noty from "noty";
 import { v4 as uuidv4 } from 'uuid';
-import {API_URL} from "../http";
-import {$routes} from "../http/routes";
-import {$modules} from "../utils/config";
-import CategorySelect from "./CategorySelect";
-import {useModules} from "../hooks/useModules";
+import {API_URL} from "../../../http";
+import {$routes} from "../../../http/routes";
+import {$modules} from "../../../utils/config";
+import CategorySelect from "../../CategorySelect";
+import {useModules} from "../../../hooks/useModules";
+import AddProperty from "./AddProperty";
+import EditProperty from "./EditProperty";
+
+const Option = ({ name }) => {
+    return <Tag
+        size={'md'}
+        borderRadius='full'
+        variant='solid'
+        colorScheme='blue'
+    >
+        <TagLabel>{name}</TagLabel>
+    </Tag>
+}
+
+const Property = (props) => {
+    return <Box mb={2}>
+        <Text fontWeight={'bold'} mb='8px'>{props.title}</Text>
+        <HStack align={'flex-start'} justify={'flex-start'} gap={1} wrap={'wrap'}>
+            {props.options.map((opt, i) => (
+                <Option name={opt} key={'prop-'+props.title+'-'+i} />
+            ))}
+        </HStack>
+        <Box mt={2}>
+            <EditProperty updateProperty={props.updateProperty} hasProperty={props.hasProperty} {...props} />
+            <Button ml={2} onClick={() => props.deleteProperty(props.title)} size={'sm'}>Удалить опцию</Button>
+        </Box>
+    </Box>
+}
 
 const AddProduct = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -101,9 +129,33 @@ const AddProduct = () => {
         setOrder(0)
         setUuid(uuidv4())
         setFiles([])
+        setProperties([])
     }
 
     const toast = useToast()
+
+    const hasProperty = (title) => {
+        return properties.find(prop => prop.title === title)
+    }
+
+    const updateProperty = (title, options) => {
+        setProperties(properties.map(prop => {
+            if(prop.title === title) {
+                prop.options = options
+            }
+            return prop;
+        }))
+    }
+
+    const addProperty = (title, options) => {
+        setProperties([...properties, {
+            title, options
+        }])
+    }
+
+    const deleteProperty = (title) => {
+        setProperties(properties.filter(prop => prop.title !== title))
+    }
 
     const handleSubmit = () => {
         if(title.trim() === '') {
@@ -126,6 +178,7 @@ const AddProduct = () => {
                 priority: order,
                 category_id: category,
                 description,
+                properties,
                 uuid,
             }).then((rs) => {
                 if(rs.ok) {
@@ -277,6 +330,17 @@ const AddProduct = () => {
                                     placeholder='Описание...'
                                     size='sm'
                                 />
+                            </Box>
+                            <Box>
+                                <Text mb='8px'>Опции</Text>
+                                <AddProperty addProperty={addProperty} hasProperty={hasProperty} />
+                                {properties.map((prop, i) => <Property
+                                    deleteProperty={deleteProperty}
+                                    {...prop}
+                                    key={'prop-'+i}
+                                    updateProperty={updateProperty}
+                                    hasProperty={hasProperty}
+                                />)}
                             </Box>
                         </Stack>
                     </ModalBody>

@@ -11,4 +11,8 @@ const $modules = {
     },
 }
 
-export {$modules}
+const $config = {
+    options_limit: 10,
+}
+
+export {$modules, $config}

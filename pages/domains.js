@@ -1,16 +1,16 @@
 import React, {useEffect, useMemo} from 'react';
 import shop from "../store/shop";
-import EditCategory from "../components/table/EditCategory";
+import EditCategory from "../components/modals/EditCategory";
 import DeleteBtn from "../components/table/DeleteBtn";
 import {Td} from "@chakra-ui/react";
 import Head from "next/head";
 import DataTable from "../components/DataTable";
-import AddCategory from "../components/AddCategory";
+import AddCategory from "../components/modals/AddCategory";
 import {observer} from "mobx-react-lite";
 import store from "../store/store";
 import Link from "next/link";
 import {$routes} from "../http/routes";
-import AddDomain from "../components/AddDomain";
+import AddDomain from "../components/modals/AddDomain";
 
 const Domains = () => {
     const data = useMemo(() => store.domains, [store.domains])

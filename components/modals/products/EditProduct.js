@@ -1,7 +1,7 @@
 import React, {useMemo, useState} from 'react';
 import {
     Box,
-    Button,
+    Button, HStack,
     Input,
     Modal,
     ModalBody,
@@ -16,19 +16,47 @@ import {
     NumberInputStepper,
     Select,
     SimpleGrid,
-    Stack,
-    Text, Textarea, useToast
+    Stack, Tag, TagCloseButton, TagLabel,
+    Text, Textarea, useToast, VStack
 } from "@chakra-ui/react";
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 import "filepond/dist/filepond.min.css";
 import {FaEdit} from "react-icons/fa";
-import {useModules} from "../hooks/useModules";
-import {$modules} from "../utils/config";
-import shop from "../store/shop";
+import {useModules} from "../../../hooks/useModules";
+import {$modules} from "../../../utils/config";
+import shop from "../../../store/shop";
 import {observer} from "mobx-react-lite";
-import ImageInput from "./ImageInput";
-import CategorySelect from "./CategorySelect";
+import ImageInput from "../../ImageInput";
+import CategorySelect from "../../CategorySelect";
 import Noty from "noty";
+import AddProperty from "./AddProperty";
+import EditProperty from "./EditProperty";
+
+const Option = ({ name }) => {
+    return <Tag
+        size={'md'}
+        borderRadius='full'
+        variant='solid'
+        colorScheme='blue'
+    >
+        <TagLabel>{name}</TagLabel>
+    </Tag>
+}
+
+const Property = (props) => {
+    return <Box mb={2}>
+        <Text fontWeight={'bold'} mb='8px'>{props.title}</Text>
+        <HStack align={'flex-start'} justify={'flex-start'} gap={1} wrap={'wrap'}>
+            {props.options.map((opt, i) => (
+                <Option name={opt} key={'prop-'+props.title+'-'+i} />
+            ))}
+        </HStack>
+        <Box mt={2}>
+            <EditProperty updateProperty={props.updateProperty} hasProperty={props.hasProperty} {...props} />
+            <Button ml={2} onClick={() => props.deleteProperty(props.title)} size={'sm'}>Удалить опцию</Button>
+        </Box>
+    </Box>
+}
 
 const EditProduct = (props) => {
     const [isOpen, setIsOpen] = useState(false)
@@ -39,6 +67,7 @@ const EditProduct = (props) => {
     const [category, setCategory] = useState(props.category_id)
     const [order, setOrder] = useState(props.priority || 0)
     const [discount, setDiscount] = useState(props.discount || 0)
+    const [properties, setProperties] = useState(props.properties || [])
     const [description, setDescription] = useState(props.description || '')
     const [uuid, setUuid] = useState(props.uuid);
     const categories = useMemo(() => shop.categories, [shop.categories])
@@ -73,6 +102,29 @@ const EditProduct = (props) => {
         }).show()
     }
 
+    const hasProperty = (title) => {
+        return properties.find(prop => prop.title === title)
+    }
+
+    const updateProperty = (title, options) => {
+        setProperties(properties.map(prop => {
+            if(prop.title === title) {
+                prop.options = options
+            }
+            return prop;
+        }))
+    }
+
+    const addProperty = (title, options) => {
+        setProperties([...properties, {
+            title, options
+        }])
+    }
+
+    const deleteProperty = (title) => {
+        setProperties(properties.filter(prop => prop.title !== title))
+    }
+
     const handleSubmit = () => {
         if(title.trim() === '') {
             validationError('title')
@@ -94,6 +146,7 @@ const EditProduct = (props) => {
                 priority: order,
                 category_id: category,
                 discount,
+                properties,
             }).then(() => {
                 shop.requestProducts()
                 toast({
@@ -222,6 +275,17 @@ const EditProduct = (props) => {
                                     placeholder='Описание...'
                                     size='sm'
                                 />
+                            </Box>
+                            <Box>
+                                <Text mb='8px'>Опции</Text>
+                                <AddProperty addProperty={addProperty} hasProperty={hasProperty} />
+                                {properties.map((prop, i) => <Property
+                                    deleteProperty={deleteProperty}
+                                    {...prop}
+                                    key={'prop-'+i}
+                                    updateProperty={updateProperty}
+                                    hasProperty={hasProperty}
+                                />)}
                             </Box>
                             <Box>
                                 <ImageInput

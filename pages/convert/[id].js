@@ -2,7 +2,7 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {useRouter} from "next/router";
 import Head from "next/head";
 import DataTable from "../../components/DataTable";
-import AddProduct from "../../components/AddProduct";
+import AddProduct from "../../components/modals/products/AddProduct";
 import Card from "../../components/Card";
 import store from "../../store/store";
 import {observer} from "mobx-react-lite";

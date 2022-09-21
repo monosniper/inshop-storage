@@ -1,11 +1,11 @@
 import React, {useEffect, useMemo} from 'react';
 import shop from "../store/shop";
-import EditProduct from "../components/EditProduct";
+import EditProduct from "../components/modals/products/EditProduct";
 import DeleteBtn from "../components/table/DeleteBtn";
 import {Td} from "@chakra-ui/react";
 import Head from "next/head";
 import DataTable from "../components/DataTable";
-import AddProduct from "../components/AddProduct";
+import AddProduct from "../components/modals/products/AddProduct";
 import {observer} from "mobx-react-lite";
 import {AiFillCheckCircle} from "react-icons/ai";
 import styles from '../styles/Orders.module.scss'
@@ -72,7 +72,15 @@ const Orders = () => {
         </Td>,
         products: (row, cell) => {
             return <Td {...cell.getCellProps()}>
-                {row.original.products.map(product => product.title).join(', ')}
+                {row.original.products.map((product, i) => <div style={{margin: '.5rem 0'}} key={'props-'+row.original.id+'-'+i}>
+                    <b>{product.title}</b> <br/>
+                    {product.selectedProps.map((prop, i) => {
+                        return <div className={styles['shipping-data']} key={'shipping_data-' + row.original.id + '-' + i}>
+                            <span className={styles['shipping-data__key']}>{prop.title}</span>
+                            <span className={styles['shipping-data__value']}>{prop.value}</span>
+                        </div>
+                    })}
+                </div>)}
             </Td>
         },
         payed: (row, cell) => <Td {...cell.getCellProps()}>

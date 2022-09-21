@@ -4,10 +4,10 @@ import {Td} from "@chakra-ui/react";
 import DataTable from "../components/DataTable";
 import {observer} from "mobx-react-lite";
 import shop from "../store/shop";
-import AddCategory from "../components/AddCategory";
-import EditProduct from "../components/EditProduct";
+import AddCategory from "../components/modals/AddCategory";
+import EditProduct from "../components/modals/products/EditProduct";
 import DeleteBtn from "../components/table/DeleteBtn";
-import EditCategory from "../components/table/EditCategory";
+import EditCategory from "../components/modals/EditCategory";
 
 const Categories = () => {
     const data = useMemo(() => shop.categories, [shop.categories])

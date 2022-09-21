@@ -3,7 +3,7 @@ import Head from "next/head";
 import {Checkbox, Td} from "@chakra-ui/react";
 import DataTable from "../components/DataTable";
 import shop from "../store/shop";
-import EditProduct from "../components/EditProduct";
+import EditProduct from "../components/modals/products/EditProduct";
 import DeleteBtn from "../components/table/DeleteBtn";
 import {observer} from "mobx-react-lite";
 

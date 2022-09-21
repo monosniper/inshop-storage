@@ -1,13 +1,13 @@
 import React, {useEffect, useMemo} from 'react';
 import shop from "../store/shop";
-import EditCategory from "../components/table/EditCategory";
+import EditCategory from "../components/modals/EditCategory";
 import DeleteBtn from "../components/table/DeleteBtn";
 import {Td} from "@chakra-ui/react";
 import Head from "next/head";
 import DataTable from "../components/DataTable";
-import AddCategory from "../components/AddCategory";
-import AddReview from "../components/table/AddReview";
-import EditReview from "../components/table/EditReview";
+import AddCategory from "../components/modals/AddCategory";
+import AddReview from "../components/modals/AddReview";
+import EditReview from "../components/modals/EditReview";
 
 const Reviews = () => {
     const data = useMemo(() => shop.reviews, [shop.reviews])

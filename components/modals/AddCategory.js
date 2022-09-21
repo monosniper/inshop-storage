@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import Noty from "noty";
-import shop from "../store/shop";
-import styles from "../styles/AddProduct.module.scss";
+import shop from "../../store/shop";
+import styles from "../../styles/AddProduct.module.scss";
 import {HiPlus} from "react-icons/hi";
 import {
     Box, Button,
@@ -12,27 +12,25 @@ import {
     ModalContent, ModalFooter,
     ModalHeader,
     ModalOverlay,
-    Stack, Switch,
+    Stack,
     Text,
 } from "@chakra-ui/react";
 import {v4 as uuidv4} from "uuid";
-import ImageInput from "./ImageInput";
-import store from "../store/store";
+import ImageInput from "../ImageInput";
 
-const AddDomain = () => {
+const AddCategory = () => {
     const [isOpen, setIsOpen] = useState(false)
-    const [name, setName] = useState('')
-    const [isSubdomain, setIsSubdomain] = useState(true)
+    const [title, setTitle] = useState('')
+    const [uuid, setUuid] = useState(uuidv4());
 
     const handleOpen = () => setIsOpen(true)
     const handleClose = () => setIsOpen(false)
 
-    const handleNameChange = e => setName(e.target.value)
-    const handleIsSubdomainChange = e => setIsSubdomain(e.target.checked)
+    const handleTitleChange = e => setTitle(e.target.value)
 
     const validationError = (type) => {
         const errors = {
-            'name': 'Имя обязательно к заполнению.',
+            'title': 'Название обязательно к заполнению.',
         }
 
         new Noty({
@@ -42,24 +40,25 @@ const AddDomain = () => {
     }
 
     const resetFields = () => {
-        setName('')
+        setTitle('')
+        setUuid(uuidv4())
     }
 
     const handleSubmit = () => {
-        if(name.trim() === '') {
+        if(title.trim() === '') {
             validationError('title')
         } else {
-            store.addDomain({
-                name, isSubdomain
-            }).then((rs) => {
+            shop.createCategory({
+                title,
+                uuid,
+            }).then(() => {
                 new Noty({
-                    type: rs.ok ? 'success' : 'error',
-                    text: rs.ok ? 'Доменное имя было успешно добавлено.' : rs.message
+                    type: 'success',
+                    text: 'Категория добавлена успешно.'
                 }).show()
 
                 setIsOpen(false)
                 resetFields()
-                store.requestDomains()
             })
         }
     }
@@ -73,17 +72,20 @@ const AddDomain = () => {
             <Modal onClose={handleClose} closeOnOverlayClick={false} isOpen={isOpen} isCentered>
                 <ModalOverlay/>
                 <ModalContent>
-                    <ModalHeader>Добавить домен</ModalHeader>
+                    <ModalHeader>Добавить категорию</ModalHeader>
                     <ModalCloseButton/>
                     <ModalBody>
                         <Stack spacing={2}>
-                            <label>Поддомен (*.inshop-app.site)</label>
-                            <Switch isChecked={isSubdomain} onChange={handleIsSubdomainChange} />
                             <Box>
-                                <Text mb='8px'>Имя</Text>
+                                <ImageInput
+                                    uuid={uuid}
+                                />
+                            </Box>
+                            <Box>
+                                <Text mb='8px'>Название</Text>
                                 <Input
-                                    value={name}
-                                    onChange={handleNameChange}
+                                    value={title}
+                                    onChange={handleTitleChange}
                                     placeholder=''
                                     size='sm'
                                 />
@@ -100,4 +102,4 @@ const AddDomain = () => {
     );
 };
 
-export default AddDomain;
+export default AddCategory;
