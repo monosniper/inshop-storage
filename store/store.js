@@ -107,6 +107,8 @@ class Store {
             shop.setReviews(data.reviews);
             shop.setOrders(data.orders);
             shop.setFilters(data.filters);
+            shop.setPromocodes(data.promocodes);
+            console.log(data.promocodes)
         }
 
         return data;

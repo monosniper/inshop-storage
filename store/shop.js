@@ -21,6 +21,7 @@ class Shop {
     reviews = []
     orders = []
     filters = []
+    promocodes = []
 
     constructor() {
         makeAutoObservable(this)
@@ -85,6 +86,10 @@ class Shop {
 
     setCustomPages(customPages) {
         this.customPages = customPages
+    }
+
+    setPromocodes(data) {
+        this.promocodes = data;
     }
 
     hasModule(id) {
@@ -159,6 +164,14 @@ class Shop {
         return rs;
     }
 
+    async createPromocode(data) {
+        const rs = await ShopService.createPromocode(this.id, {shop_id: this.id, ...data})
+
+        this.setPromocodes([...this.promocodes, rs.data.data])
+
+        return rs;
+    }
+
     async createReview(data) {
         return await ShopService.createReview(this.id, {shop_id: this.id, ...data})
     }
@@ -223,6 +236,14 @@ class Shop {
         return rs;
     }
 
+    async requestPromocodes() {
+        const rs = await ShopService.getPromocodes(this.id)
+        if (rs.data) {
+            this.setPromocodes(rs.data)
+        }
+        return rs;
+    }
+
     async requestReviews() {
         const rs = await ShopService.getReviews(this.id)
         if (rs.data) {
@@ -272,6 +293,14 @@ class Shop {
 
     async deleteCategories(ids) {
         return await ShopService.deleteCategories(this.id, ids)
+    }
+
+    async deletePromocode(id) {
+        return await ShopService.deletePromocode(this.id, id)
+    }
+
+    async deletePromocodes(ids) {
+        return await ShopService.deletePromocodes(this.id, ids)
     }
 
     async deleteReview(id) {
@@ -352,6 +381,10 @@ class Shop {
 
     async updateCategory(id, data) {
         return await ShopService.updateCategory(this.id, id, data)
+    }
+
+    async updatePromocode(id, data) {
+        return await ShopService.updatePromocode(this.id, id, data)
     }
 }
 

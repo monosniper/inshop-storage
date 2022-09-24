@@ -56,6 +56,21 @@ export default class ShopService {
         }
     }
 
+    static async updatePromocode(shop_id, id, data) {
+        try {
+            const rs = await $api.put($apiRoutes.shops.promocodes.update(shop_id, id), data)
+            return {
+                ok: true,
+                data: rs.data.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
     static async createCustomPage(shop_id, data) {
         try {
             const rs = await $api.post($apiRoutes.shops.customPages.create(shop_id), data)
@@ -225,6 +240,21 @@ export default class ShopService {
     static async getCategories(id) {
         try {
             const rs = await $api.get($apiRoutes.shops.categories.list(id))
+            return {
+                ok: true,
+                data: rs.data.data,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async getPromocodes(id) {
+        try {
+            const rs = await $api.get($apiRoutes.shops.promocodes.list(id))
             return {
                 ok: true,
                 data: rs.data.data,
@@ -408,6 +438,20 @@ export default class ShopService {
         }
     }
 
+    static async deletePromocode(shop_id, id) {
+        try {
+            await $api.delete($apiRoutes.shops.promocodes.delete(shop_id, id))
+            return {
+                ok: true,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
     static async deleteReview(shop_id, id) {
         try {
             await $api.delete($apiRoutes.shops.reviews.delete(shop_id, id))
@@ -467,6 +511,20 @@ export default class ShopService {
     static async deleteCategories(shop_id, ids) {
         try {
             await $api.post($apiRoutes.shops.categories.deleteMany(shop_id), {ids})
+            return {
+                ok: true,
+            }
+        } catch (e) {
+            return {
+                ok: false,
+                message: e.response.data.message,
+            }
+        }
+    }
+
+    static async deletePromocodes(shop_id, ids) {
+        try {
+            await $api.post($apiRoutes.shops.promocodes.deleteMany(shop_id), {ids})
             return {
                 ok: true,
             }
@@ -584,6 +642,10 @@ export default class ShopService {
 
     static async createCategory(shop_id, data) {
         return await $api.post($apiRoutes.shops.categories.create(shop_id), data);
+    }
+
+    static async createPromocode(shop_id, data) {
+        return await $api.post($apiRoutes.shops.promocodes.create(shop_id), data);
     }
 
     static async updateProduct(shop_id, product_id, data) {

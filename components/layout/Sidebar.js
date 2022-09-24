@@ -4,7 +4,7 @@ import {Icon} from "@chakra-ui/react";
 import {FiUsers} from "react-icons/fi";
 import {GoHome} from "react-icons/go";
 import {IoConstructOutline} from "react-icons/io5";
-import {AiOutlineAppstore} from "react-icons/ai";
+import {AiFillStar, AiOutlineAppstore} from "react-icons/ai";
 import Link from "next/link";
 import {$externalRoutes, $routes} from "../../http/routes";
 import {useRouter} from "next/router";
@@ -54,7 +54,7 @@ const Sidebar = () => {
             {modules.get($modules.banner) ? <SidebarItem icon={<Icon as={MdOutlineViewCarousel} w={6} h={6} />} href={$routes.banners.index}>Баннеры</SidebarItem> : null}
             {modules.get($modules.custom_pages) ? <SidebarItem icon={<Icon as={RiPagesLine} w={6} h={6} />} href={$routes.custom_pages.index}>Доп. страницы</SidebarItem> : null}
             {modules.get($modules.reviews) ? <SidebarItem icon={<Icon as={MdReviews} w={6} h={6} />} href={$routes.reviews}>Отзывы</SidebarItem> : null}
-            {/*{home.id  && <SidebarItem icon={<Icon as={IoConstructOutline} w={6} h={6} />} href={$externalRoutes.constructor(home.id)} externalLink>Конструктор</SidebarItem>}*/}
+            {modules.get($modules.promocodes) ? <SidebarItem icon={<Icon as={AiFillStar} w={6} h={6} />} href={$routes.promocodes}>Промокоды</SidebarItem> : null}
         </div>
     );
 };

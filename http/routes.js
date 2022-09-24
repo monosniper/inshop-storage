@@ -17,6 +17,7 @@ export const $routes = {
     modules_shop: '/modules/home',
     products: '/products',
     users: '/users',
+    promocodes: '/promocodes',
     reviews: '/reviews',
     shop: (id) => `/home/${id}`,
     convertation: (id) => `/convert/${id}`,
@@ -61,6 +62,13 @@ export const $apiRoutes = {
             update: (shop_id, client_id) => `/shops/${shop_id}/clients/${client_id}`,
             delete: (shop_id, client_id) => `/shops/${shop_id}/clients/${client_id}`,
             deleteMany: (shop_id) => `/shops/${shop_id}/clients/deleteMany`,
+        },
+        promocodes: {
+            list: (id) => `/shops/${id}/promocodes`,
+            create: (id) => `/shops/${id}/promocodes`,
+            update: (shop_id, promocode_id) => `/shops/${shop_id}/promocodes/${promocode_id}`,
+            delete: (shop_id, promocode_id) => `/shops/${shop_id}/promocodes/${promocode_id}`,
+            deleteMany: (shop_id) => `/shops/${shop_id}/promocodes/deleteMany`,
         },
         orders: {
             list: (id) => `/shops/${id}/orders`,

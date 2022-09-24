@@ -5,6 +5,7 @@ const $modules = {
     banner: 'banner',
     custom_pages: 'custom_pages',
     discounts: 'discounts',
+    promocodes: 'promocodes',
     reviews: 'reviews',
     payment: {
         qiwi: 'payment.qiwi'
