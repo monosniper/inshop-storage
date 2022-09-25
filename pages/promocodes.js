@@ -50,7 +50,7 @@ const Promocodes = () => {
             accessor: 'infinite',
         },
         {
-            Header: 'Актвен до',
+            Header: 'Активен до',
             accessor: 'actual_until',
         }
     ], [])

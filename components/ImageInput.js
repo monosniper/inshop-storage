@@ -59,7 +59,7 @@ const ImageInput = ({ uuid, images=[], multiple=false, prefix=false }) => {
         document.addEventListener('FilePond:removefile', (e) => {
             if($api) {
                 const uuid = e.detail.file.getMetadata('uuid');
-                $api.post($apiRoutes.files.delete, {filename: uuid + '/images/' + prefix + e.detail.file.filename})
+                $api.post($apiRoutes.files.delete, {filename: uuid + '/images/' + (prefix ? prefix : '') + e.detail.file.filename})
             }
         });
     }, [])
